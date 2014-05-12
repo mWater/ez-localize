@@ -1,0 +1,1 @@
+exports.Localizer = require('./lib/Localizer');

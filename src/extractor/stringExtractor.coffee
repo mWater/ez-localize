@@ -15,7 +15,6 @@ exports.findFromRootFile = (rootFile, options, callback) ->
   strings = []
   stream = through (item) =>
     # Extract strings from item
-    console.log "Reading #{item.id}"
     filename = item.id
     ext = path.extname(filename)
 
