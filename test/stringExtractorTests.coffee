@@ -106,5 +106,5 @@ $ ->
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->
       stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }, (strings) =>
-        assert.deepEqual strings, ['b', 'c', 'd', 'a']
+        assert.deepEqual strings.sort(), ['a', 'b', 'c', 'd']
         done()

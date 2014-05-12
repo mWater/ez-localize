@@ -34,6 +34,7 @@
     "lodash": "~2.4.1",
     "sinon": "~1.8.2",
     "testem": "~0.6.7",
+    "underscore": "^1.6.0",
     "vinyl-source-stream": "^0.1.1"
   },
   "dependencies": {
