@@ -1,7 +1,7 @@
 {
   "name": "ez-localize",
   "version": "0.2.2",
-  "description": "Super-simple string localization",
+  "description": "Super-simple localization of strings in a Node/Browserify application",
   "main": "index.js",
   "scripts": {
     "test": "testem ci",
@@ -13,9 +13,11 @@
   },
   "keywords": [
     "localize",
+    "localizer",
     "internationalize",
     "i18n",
-    "translate"
+    "translate",
+    "browserify"
   ],
   "author": "Clayton Grassick",
   "license": "LGPLv3",
