@@ -43,5 +43,16 @@ exports.updateLocalizations = (rootFile, data, options, callback) ->
           if loc.code != "en" and not map[str][loc.code]?
             map[str][loc.code] = ""
 
+    # Mark unused
+    known = {}
+    for str in strs
+      known[str] = true
+
+    for item in data.strings
+      if not known[item.en]
+        item._unused = true
+      else
+        delete item._unused
+
     callback()
 
