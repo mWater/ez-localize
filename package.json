@@ -27,7 +27,6 @@
   "homepage": "https://github.com/mWater/ez-localize",
   "devDependencies": {
     "chai": "~1.9.0",
-    "coffee-script": "~1.6.3",
     "glob": "^3.2.9",
     "gulp": "^3.6.2",
     "gulp-coffee": "^1.4.2",
@@ -38,6 +37,7 @@
     "vinyl-source-stream": "^0.1.1"
   },
   "dependencies": {
+    "coffee-script": "~1.6.3",
     "browserify": "~3.29.0",
     "coffee": "0.0.1",
     "coffeeify": "~0.6.0",
