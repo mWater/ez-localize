@@ -44,6 +44,12 @@ _You're done!_
 
 ## Advanced
 
+String substitution:
+
+```
+console.log(T("This works {0}%!", 100);
+```
+
 It handles Coffeescript and Handlebars too:
 
 ```
