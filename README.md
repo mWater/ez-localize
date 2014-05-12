@@ -30,8 +30,9 @@ extractor.updateLocalizationFile("index.js", "localizations.json", {}, function(
 
 ```
 var ezlocalize = require('ez-localize');
+var localizations = require('localizations.json');
 
-var localizer = new ezlocalize.Localizer(require('localizations.json'), "en")
+var localizer = new ezlocalize.Localizer(localizations, "en")
 localizer.makeGlobal();
 
 ```
@@ -55,8 +56,9 @@ To register a T helper:
 ```
 var ezlocalize = require('ez-localize');
 var handlebars = require("hbsfy/runtime");
+var localizations = require('localizations.json');
 
-var localizer = new ezlocalize.Localizer(require('localizations.json'), "en")
+var localizer = new ezlocalize.Localizer(localizations, "en")
 localizer.makeGlobal(handlebars);
 ```
 
