@@ -24,3 +24,6 @@ describe "Localizer", ->
 
   it "replaces parameters", ->
     assert.equal @loc.localizeString("a {0} b {1} c", "1", 2), "x 2 y 1 z"
+
+  it "T replaces parameters", ->
+    assert.equal @loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z"

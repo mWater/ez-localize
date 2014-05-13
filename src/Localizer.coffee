@@ -21,7 +21,7 @@ module.exports = class Localizer
     return @data.locales
 
   T: (str, args...) =>
-    return @localizeString(arguments)
+    return @localizeString.apply(this, arguments)
 
   localizeString: (str, args...) =>
     # Find string, falling back to English
