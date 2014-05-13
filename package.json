@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "coffee-script": "~1.6.3",
-    "browserify": "~3.29.0",
     "coffee": "0.0.1",
     "coffeeify": "~0.6.0",
     "handlebars": "^1.3.0",

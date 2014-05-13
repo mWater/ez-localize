@@ -18,13 +18,4 @@ gulp.task('copy', function() {
 		.pipe(gulp.dest('./lib/'));
 });
 
-// gulp.task('prepareTests', ['coffee', 'copy'], function() {
-// 	var bundler = browserify({entries: glob.sync("./test/*Tests.coffee"), extensions: [".coffee"] }).
-// 		transform(coffeeify);
-// 	var stream = bundler.bundle()
-// 		.pipe(streamConvert('browserified.js'))
-// 		.pipe(gulp.dest('./test'));
-// 	return stream;
-// });
-
 gulp.task('default', ['coffee', 'copy']);
