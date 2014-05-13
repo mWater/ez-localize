@@ -34,7 +34,7 @@ exports.findFromRootFile = (rootFile, options, callback) ->
 
   options.filter = (id) ->
     # Only take relative paths or external modules
-    if id.match /^\./ or id in externalModules
+    if id.match(/^\./) or (id in externalModules)
       if oldFilter and not oldFilter(id)
         return false
 
