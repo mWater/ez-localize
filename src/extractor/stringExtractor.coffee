@@ -10,6 +10,7 @@ fs = require 'fs'
 # Options include: (they are passed to browserify)
 # extensions: e.g. ['.js', '.coffee']
 # transformKey: e.g. "browserify"
+# externalModules: optional list of external modules to include. Otherwise only relative requires are processed
 # callback is called with list of strings
 exports.findFromRootFile = (rootFile, options, callback) ->
   strings = []
@@ -27,6 +28,17 @@ exports.findFromRootFile = (rootFile, options, callback) ->
         strings = strings.concat(exports.findInHbs(fs.readFileSync(filename, 'utf-8')))
   , =>
     callback(strings)
+
+  oldFilter = options.filter  
+  externalModules = options.externalModules || []
+
+  options.filter = (id) ->
+    # Only take relative paths or external modules
+    if id.match /^\./ or id.match in externalModules
+      if oldFilter and not oldFilter(id)
+        return false
+
+      return true
 
   mdeps(path.resolve(rootFile), options).pipe(stream)
 

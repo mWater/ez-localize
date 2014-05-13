@@ -105,6 +105,12 @@ $ ->
 
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->
-      stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }, (strings) =>
+      options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] } 
+      stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', options, (strings) =>
         assert.deepEqual strings.sort(), ['a', 'b', 'c', 'd']
+        done()
+
+    it "ignores external includes", (done) ->
+      stringExtractor.findFromRootFile __dirname + '/requireSample/ext.js', {}, (strings) =>
+        assert.deepEqual strings.sort(), ['hello']
         done()

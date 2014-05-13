@@ -68,3 +68,4 @@ var localizer = new ezlocalize.Localizer(localizations, "en")
 localizer.makeGlobal(handlebars);
 ```
 
+Only relative requires are included by default. To include another module, pass `externalModules` to options, an optional list of external modules to include
