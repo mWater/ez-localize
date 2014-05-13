@@ -31,13 +31,17 @@ exports.updateLocalizations = (rootFile, data, options, callback) ->
     for str in strs
       # Create item if doesn't exist
       if not map[str]
-        string = { en: str }
+        string = { _base: "en", en: str }
         for loc in data.locales
           if loc.code != "en"
             string[loc.code] = ""
         data.strings.push string
         map[string.en] = string
       else
+        # Add base if not present
+        if not map[str]._base
+          map[str]._base = "en"          
+
         # Just add missing languages
         for loc in data.locales
           if loc.code != "en" and not map[str][loc.code]?

@@ -10,7 +10,7 @@ describe "updateLocalizations", ->
     options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }
     extractor.updateLocalizations __dirname + '/requireSample/a.js', data, options, ->
       assert.deepEqual data.locales, [{ code: "en", name: "English"}]
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ en: "a" }, { en: "b" }, { en: "c" }, { en: "d" }]
+      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }]
       done()
 
   it "preserves languages", (done) ->
@@ -20,13 +20,18 @@ describe "updateLocalizations", ->
         { code: "es", name: "Espanol" }
       ]
       strings: [
-        { en: "b", es: "b-es" }
+        { _base: "en", en: "b", es: "b-es" }
       ]
     }
     options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }
     extractor.updateLocalizations __dirname + '/requireSample/a.js', data, options, ->
       assert.deepEqual data.locales, [{ code: "en", name: "English"}, { code: "es", name: "Espanol" }]
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ en: "a", es: "" }, { en: "b", es: "b-es" }, { en: "c", es: "" }, { en: "d", es: "" }]
+      assert.deepEqual _.sortBy(data.strings, "en"), [
+        { _base: "en", en: "a", es: "" }
+        { _base: "en", en: "b", es: "b-es" }
+        { _base: "en", en: "c", es: "" }
+        { _base: "en", en: "d", es: "" }
+      ]
       done()
 
 
@@ -36,12 +41,12 @@ describe "updateLocalizations", ->
         { code: "en", name: "English" }
       ]
       strings: [
-        { en: "x" }
+        { _base: "en", en: "x" }
       ]
     }
     options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }
     extractor.updateLocalizations __dirname + '/requireSample/b.js', data, options, ->
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ en: "b" }, { en: "x", _unused: true }]
+      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "b" }, { _base: "en", en: "x", _unused: true }]
       done()
 
   it "removes unused", (done) ->
@@ -50,10 +55,10 @@ describe "updateLocalizations", ->
         { code: "en", name: "English" }
       ]
       strings: [
-        { en: "b", _unused: true }
+        { _base: "en", en: "b", _unused: true }
       ]
     }
     options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }
     extractor.updateLocalizations __dirname + '/requireSample/b.js', data, options, ->
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ en: "b"}]
+      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "b"}]
       done()
