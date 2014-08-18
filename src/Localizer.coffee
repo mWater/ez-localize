@@ -24,6 +24,10 @@ module.exports = class Localizer
     return @localizeString.apply(this, arguments)
 
   localizeString: (str, args...) =>
+    # Null is just pass-through
+    if not str?
+      return str
+      
     # Find string, falling back to English
     item = @englishMap[str]
     if item and item[@locale]
