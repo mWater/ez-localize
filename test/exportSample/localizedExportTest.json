@@ -1,0 +1,26 @@
+{
+  "locales": [
+    {
+      "code": "en",
+      "name": "English"
+    }
+  ],
+  "strings": [
+    {
+      "_base": "en",
+      "en": "a"
+    },
+    {
+      "_base": "en",
+      "en": "b"
+    },
+    {
+      "_base": "en",
+      "en": "c"
+    },
+    {
+      "_base": "en",
+      "en": "d"
+    }
+  ]
+}
