@@ -11,6 +11,10 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
 
   locales = []
   firstRow = []
+  firstRow.push {
+    value: "base"
+    formatCode: "General"
+  }
   for locale in localizations.locales
     locales.push locale.code
     firstRow.push {
@@ -23,6 +27,11 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
   for string in localizations.strings
     # Add all the base Locale values
     row = []
+
+    row.push {
+      value: string._base
+      formatCode: "General"
+    }
 
     for locale in locales
       value = string[locale]

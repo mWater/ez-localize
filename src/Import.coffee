@@ -14,25 +14,39 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
   worksheet = xlsxData.worksheets[0]
   rows = worksheet.data
 
+  xlsxLocales = []
   firstRow = rows[0]
-  referenceLocale = firstRow[0].value
-  newLocale = firstRow[1].value
+  for locale in firstRow[1..]
+    xlsxLocales.push locale.value
 
   # Read the oldDataFile and index all the entries using the referenceLocale
   map = {}
   localizations = JSON.parse(fs.readFileSync(oldDataFile, 'utf-8'))
+  jsonLocales = []
+  for locale in localizations.locales
+    jsonLocales.push locale.code
+    map[locale.code] = {}
+
+  # Should compare both locales to make sure they match!
+
+  #indexing the string with correct locales
   for string in localizations.strings
-    map[string[referenceLocale]] = string
+    base = string._base
+    map[base][string[base]] = string
 
   # For each xlsx entry
   for row in rows[1..]
     # Look up the reference string
-    string = map[row[0].value]
-    if string
-      # Add the new localized string
-      string[newLocale] = row[1].value
+    base = row[0].value
+    xlsxString = row[xlsxLocales.indexOf(base) + 1].value
+
+    jsonEntry = map[base][xlsxString]
+    if jsonEntry
+      for locale, i in xlsxLocales
+        # Add the new localized string
+        jsonEntry[locale] = row[i + 1]
     else
-      throw new Error('Could not find reference string: ' + row[0].value)
+      throw new Error('Could not find reference string: ' + xlsxString + ' using base: ' + base)
 
   # Write the whole thing to a JSon file
   fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback)
