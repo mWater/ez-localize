@@ -3,12 +3,17 @@
     {
       "code": "en",
       "name": "English"
+    },
+    {
+        "code": "fr",
+        "name": "French"
     }
   ],
   "strings": [
     {
       "_base": "en",
-      "en": "a"
+      "en": "a",
+      "fr": "avion"
     },
     {
       "_base": "en",
