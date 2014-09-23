@@ -5,25 +5,35 @@ xlsx = require 'xlsx.js'
 # xlsxFile: path of file to export
 # baseLocale: locale used as the reference for translating ("en")
 # newLocale: new locale created by the translator
-exportLocalizationFileToXlsx = (dataFile, xlsxFile, baseLocale, newLocale, callback) ->
+exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
   # Read in data file
   localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
 
-  #create the xlsx data
-  columns = []
-  for column in [baseLocale, newLocale]
-    columns.push {
-      value: column
+  locales = []
+  firstRow = []
+  for locale in localizations.locales
+    locales.push locale.code
+    firstRow.push {
+      value: locale.code
       formatCode: "General"
     }
 
-  rows = [ columns]
+  rows = [firstRow]
+
   for string in localizations.strings
     # Add all the base Locale values
-    rows.push [{
-      value: string[baseLocale]
-      formatCode: "General"
-    }]
+    row = []
+
+    for locale in locales
+      value = string[locale]
+      if not value?
+        value = ""
+      row.push {
+        value: value
+        formatCode: "General"
+      }
+
+    rows.push row
 
   data = {
     worksheets: [
@@ -38,9 +48,7 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, baseLocale, newLocale, callb
 
 dataFile = process.argv[2]
 xlsxFile = process.argv[3]
-baseLocale = process.argv[4]
-newLocale = process.argv[5]
 
-exportLocalizationFileToXlsx(dataFile, xlsxFile, baseLocale, newLocale, () ->
+exportLocalizationFileToXlsx(dataFile, xlsxFile, () ->
   console.log 'done'
 )
