@@ -29,12 +29,13 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
 
   # Should compare both locales to make sure they match!
 
-  #indexing the string with correct locales
+  # Indexing the string with correct locales
   for string in localizations.strings
     base = string._base
     map[base][string[base]] = string
 
   # For each xlsx entry
+  # Should index the xlsx strings instead, that way it would be possible to verify that there are no ambiguous keys
   for row in rows[1..]
     # Look up the reference string
     base = row[0].value

@@ -28,13 +28,16 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
     # Add all the base Locale values
     row = []
 
+    # First column is the locale
     row.push {
       value: string._base
       formatCode: "General"
     }
 
+    # Then one column for each of the localized strings
     for locale in locales
       value = string[locale]
+      # Simply put "" if the translation doesn't exist yet
       if not value?
         value = ""
       row.push {
