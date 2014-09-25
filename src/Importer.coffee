@@ -20,28 +20,44 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
     xlsxLocales.push locale.value
 
   # Read the oldDataFile and index all the entries using the referenceLocale
-  map = {}
+  xlsxMap = {}
+  jsonMap = {}
   localizations = JSON.parse(fs.readFileSync(oldDataFile, 'utf-8'))
   jsonLocales = []
   for locale in localizations.locales
     jsonLocales.push locale.code
-    map[locale.code] = {}
+    xlsxMap[locale.code] = {}
+    jsonMap[locale.code] = {}
+    if xlsxLocales.indexOf(locale.code) < 0
+      throw new Error('Could not find locale: ' + locale + ' in xlsx file.')
 
-  # Should compare both locales to make sure they match!
+  # Make sure the number of locales are the same
+  if jsonLocales.length != xlsxLocales.length
+    throw new Error('not the same number of locales')
 
-  # Indexing the string with correct locales
-  for string in localizations.strings
-    base = string._base
-    map[base][string[base]] = string
+  # Indexing the xlsx key string (making sure there is no doubles)
+  for row in rows[1..]
+    base = row[0].value
+    keyString = row[xlsxLocales.indexOf(base) + 1].value
+    if xlsxMap[base][keyString]?
+      throw new Error('XLSX: Twice the same word using the same base: ' + base + ' word: ' + keyString)
+    xlsxMap[base][keyString] = row
+
+  # Indexing the localizations strings (making sure there is no doubles)
+  for stringData in localizations.strings
+    base = stringData._base
+    keyString = stringData[base]
+    if jsonMap[base][keyString]?
+      throw new Error('JSON: Twice the same word using the same base: ' + base + ' word: ' + keyString)
+    jsonMap[base][keyString] = stringData
 
   # For each xlsx entry
-  # Should index the xlsx strings instead, that way it would be possible to verify that there are no ambiguous keys
   for row in rows[1..]
     # Look up the reference string
     base = row[0].value
     xlsxString = row[xlsxLocales.indexOf(base) + 1].value
 
-    jsonEntry = map[base][xlsxString]
+    jsonEntry = jsonMap[base][xlsxString]
     if jsonEntry
       for locale, i in xlsxLocales
         # Add the new localized string
@@ -50,7 +66,7 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
       throw new Error('Could not find reference string: ' + xlsxString + ' using base: ' + base)
 
   # Write the whole thing to a JSon file
-  fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback)
+  fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback(localizations))
 
 dataFile = process.argv[2]
 xlsxFile = process.argv[3]

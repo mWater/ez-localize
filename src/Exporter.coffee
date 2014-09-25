@@ -56,6 +56,6 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
     ]
   }
 
-  fs.writeFile(xlsxFile, xlsx(data).base64, 'base64', callback)
+  fs.writeFile(xlsxFile, xlsx(data).base64, 'base64', callback(rows))
 
 module.exports = exportLocalizationFileToXlsx

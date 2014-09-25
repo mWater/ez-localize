@@ -7,25 +7,30 @@
     {
         "code": "fr",
         "name": "French"
+    },
+    {
+        "code": "es",
+        "name": "Spanish"
     }
   ],
   "strings": [
     {
-      "_base": "en",
+      "_base": "fr",
       "en": "a",
       "fr": "avion"
     },
     {
-      "_base": "en",
-      "en": "b"
+      "_base": "es",
+      "en": "b",
+      "es": "botar"
+    },
+    {
+      "_base": "fr",
+      "fr": "chien"
     },
     {
       "_base": "en",
-      "en": "c"
-    },
-    {
-      "_base": "en",
-      "en": "d"
+      "en": "dog"
     }
   ]
 }
