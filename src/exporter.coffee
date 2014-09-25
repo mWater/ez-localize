@@ -25,6 +25,9 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
   rows = [firstRow]
 
   for string in localizations.strings
+    if string._unused
+      continue
+      
     # Add all the base Locale values
     row = []
 

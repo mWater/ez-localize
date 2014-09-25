@@ -1,4 +1,4 @@
-importer = require('./Importer')
+importer = require('./src/importer')
 
 dataFile = process.argv[2]
 xlsxFile = process.argv[3]

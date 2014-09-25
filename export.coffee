@@ -1,4 +1,4 @@
-exporter = require './Exporter'
+exporter = require './src/exporter'
 
 dataFile = process.argv[2]
 xlsxFile = process.argv[3]

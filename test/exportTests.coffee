@@ -1,5 +1,5 @@
 assert = require('chai').assert
-exporter = require '../src/Exporter'
+exporter = require '../src/exporter'
 
 describe "export xlsx file", ->
   it "export localization file to xlsx", (done) ->
