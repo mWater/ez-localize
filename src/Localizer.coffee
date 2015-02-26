@@ -47,11 +47,3 @@ module.exports = class Localizer
     global.T.localizer = this
     if handlebars?
       handlebars.registerHelper 'T', @localizeString
-
-  # Saves current locale to local storage
-  saveCurrentLocale: ->
-    window.localStorage['locale'] = @locale
-
-  # Restores current locale to local storage
-  restoreCurrentLocale: ->
-    @locale = window.localStorage['locale'] or "en"
