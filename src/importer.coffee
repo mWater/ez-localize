@@ -28,15 +28,11 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
     jsonLocales.push locale.code
     xlsxMap[locale.code] = {}
     jsonMap[locale.code] = {}
-    if xlsxLocales.indexOf(locale.code) < 0
-      throw new Error('Could not find locale: ' + locale + ' in xlsx file.')
-
-  # Make sure the number of locales are the same
-  if jsonLocales.length != xlsxLocales.length
-    throw new Error('not the same number of locales')
 
   # Indexing the xlsx key string (making sure there is no doubles)
   for row in rows[1..]
+    if not row[0] or not row[0].value
+      continue
     base = row[0].value
     keyString = row[xlsxLocales.indexOf(base) + 1].value
     if xlsxMap[base][keyString]?
@@ -47,12 +43,15 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
   for stringData in localizations.strings
     base = stringData._base
     keyString = stringData[base]
+    console.log stringData
     if jsonMap[base][keyString]?
       throw new Error('JSON: Twice the same word using the same base: ' + base + ' word: ' + keyString)
     jsonMap[base][keyString] = stringData
 
   # For each xlsx entry
   for row in rows[1..]
+    if not row[0] or not row[0].value
+      continue
     # Look up the reference string
     base = row[0].value
     xlsxString = row[xlsxLocales.indexOf(base) + 1].value
@@ -63,7 +62,7 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
         # Add the new localized string
         jsonEntry[locale] = row[i + 1]
     else
-      throw new Error('Could not find reference string: ' + xlsxString + ' using base: ' + base)
+      throw new Error('Could not find reference string: "' + xlsxString + '" using base: ' + base)
 
   # Write the whole thing to a JSon file
   fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback(localizations))
