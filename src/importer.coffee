@@ -1,6 +1,6 @@
 fs = require 'fs'
 xlsx = require 'xlsx.js'
-
+_ = require 'underscore'
 
 # oldDataFile: e.g. "localizations.json"
 # xlsxFile: path of file to export
@@ -43,7 +43,6 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
   for stringData in localizations.strings
     base = stringData._base
     keyString = stringData[base]
-    console.log stringData
     if jsonMap[base][keyString]?
       throw new Error('JSON: Twice the same word using the same base: ' + base + ' word: ' + keyString)
     jsonMap[base][keyString] = stringData
@@ -59,10 +58,18 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
     jsonEntry = jsonMap[base][xlsxString]
     if jsonEntry
       for locale, i in xlsxLocales
-        # Add the new localized string
-        jsonEntry[locale] = row[i + 1]
+        if locale != base
+          # Add the new localized string
+          if row[i + 1].value and not jsonEntry._unused
+            jsonEntry[locale] = row[i + 1].value
+          else
+            if not jsonEntry._unused
+              console.log "Missing #{xlsxString}"
     else
       throw new Error('Could not find reference string: "' + xlsxString + '" using base: ' + base)
+
+  # Sort by used
+  localizations.strings = _.sortBy(localizations.strings, (l) -> if l._unused then 1 else 0)
 
   # Write the whole thing to a JSon file
   fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback(localizations))
