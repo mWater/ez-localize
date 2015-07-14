@@ -5,9 +5,9 @@ _ = require 'underscore'
 # oldDataFile: e.g. "localizations.json"
 # xlsxFile: path of file to export
 # newDataFile: can be the same as oldDataFile (different when testing)
-importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) ->
+module.exports = (oldDataFile, xlsxFile, newDataFile) ->
   # Read the xlsx file and get the locales
-  base64File = fs.readFileSync(xlsxFile, 'base64');
+  base64File = fs.readFileSync(xlsxFile, 'base64')
   xlsxData = xlsx(base64File)
 
   # Get the rows
@@ -72,10 +72,7 @@ importLocalizationFileFromXlsx = (oldDataFile, xlsxFile, newDataFile, callback) 
   localizations.strings = _.sortBy(localizations.strings, (l) -> if l._unused then 1 else 0)
 
   # Write the whole thing to a JSon file
-  fs.writeFile(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8', callback(localizations))
+  fs.writeFileSync(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8')
+  return localizations
 
-dataFile = process.argv[2]
-xlsxFile = process.argv[3]
-newDataFile = process.argv[4]
-
-module.exports = importLocalizationFileFromXlsx
+ 

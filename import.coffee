@@ -1,8 +1,16 @@
+minimist = require('minimist')
 importer = require('./src/importer')
 
-dataFile = process.argv[2]
-xlsxFile = process.argv[3]
-newDataFile = process.argv[4]
+# Process args
+args = minimist(process.argv.slice(2))
+
+if not args._.length > 0
+  console.log "Usage: <XLSX file input> <JSON file input> [<JSON file output>]"
+  return 
+
+dataFile = args._[0]
+xlsxFile = args._[1]
+newDataFile = args._[2]
 
 if not newDataFile?
   newDataFile = dataFile

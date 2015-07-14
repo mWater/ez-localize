@@ -3,9 +3,7 @@ xlsx = require 'xlsx.js'
 
 # dataFile: e.g. "localizations.json"
 # xlsxFile: path of file to export
-# baseLocale: locale used as the reference for translating ("en")
-# newLocale: new locale created by the translator
-exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
+module.exports = exportLocalizationFileToXlsx = (dataFile, xlsxFile) ->
   # Read in data file
   localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
 
@@ -59,6 +57,6 @@ exportLocalizationFileToXlsx = (dataFile, xlsxFile, callback) ->
     ]
   }
 
-  fs.writeFile(xlsxFile, xlsx(data).base64, 'base64', callback(rows))
+  fs.writeFileSync(xlsxFile, xlsx(data).base64, 'base64')
+  return rows
 
-module.exports = exportLocalizationFileToXlsx
