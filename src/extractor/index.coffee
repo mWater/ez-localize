@@ -3,6 +3,9 @@ stringExtractor = require './stringExtractor'
 
 # rootFile: file to walk dependencies from
 # dataFile: e.g. "localizations.json"
+# options: 
+#  all options for stringExtractor.findFromRootFile
+#  plus: extraStrings which includes extra strings that are not in the root file
 exports.updateLocalizationFile = (rootFile, dataFile, options, callback) ->
   # Read in data file
   if fs.existsSync(dataFile)
@@ -23,6 +26,10 @@ exports.updateLocalizations = (rootFile, data, options, callback) ->
 
   # Get strings
   stringExtractor.findFromRootFile rootFile, options, (strs) ->
+    # Add extra strings
+    if options.extraStrings
+      strs = strs.concat(options.extraStrings)
+      
     # Create map of english
     map = {}
     for loc in data.strings
