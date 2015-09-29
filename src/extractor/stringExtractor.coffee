@@ -60,8 +60,12 @@ exports.findInJs = (js) ->
 
 exports.findInCoffee = (cs) ->
   # Compile coffeescript
-  js = coffee.compile(cs)
-  return exports.findInJs(js)
+  try
+    js = coffee.compile(cs)
+    return exports.findInJs(js)
+  catch err
+    console.error cs
+    throw err
 
 findInHbsProgramNode = (node) ->
   items = []
