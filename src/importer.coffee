@@ -60,7 +60,7 @@ module.exports = (oldDataFile, xlsxFile, newDataFile) ->
       for locale, i in xlsxLocales
         if locale != base
           # Add the new localized string
-          if row[i + 1].value and not jsonEntry._unused
+          if row[i + 1] and row[i + 1].value and not jsonEntry._unused
             jsonEntry[locale] = row[i + 1].value
           else
             if not jsonEntry._unused
