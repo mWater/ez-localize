@@ -1,6 +1,6 @@
 fs = require 'fs'
 xlsx = require 'xlsx.js'
-_ = require 'underscore'
+_ = require 'lodash'
 
 # oldDataFile: e.g. "localizations.json"
 # xlsxFile: path of file to export
