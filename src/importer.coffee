@@ -64,9 +64,9 @@ module.exports = (oldDataFile, xlsxFile, newDataFile) ->
             jsonEntry[locale] = row[i + 1].value
           else
             if not jsonEntry._unused
-              console.log "Missing #{xlsxString}"
+              console.log "Missing translation for base string #{xlsxString}"
     else
-      throw new Error('Could not find reference string: "' + xlsxString + '" using base: ' + base)
+      console.log "Translation for #{xlsxString} (#{base}) is not required"
 
   # Sort by used
   localizations.strings = _.sortBy(localizations.strings, (l) -> if l._unused then 1 else 0)
