@@ -40,6 +40,10 @@ module.exports = class Localizer
       locstr = locstr.replace("{" + i + "}", args[i])
     return locstr
 
+  # Determines if a string is localized
+  isLocalized: (str) =>
+    return str and @englishMap[str] and @englishMap[str][@locale]
+
   # Makes this localizer global. handlebars is instance to register
   # helper on, null for none
   makeGlobal: (handlebars) ->
