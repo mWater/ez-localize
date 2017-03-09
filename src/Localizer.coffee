@@ -28,17 +28,37 @@ module.exports = class Localizer
     if not str?
       return str
       
-    # Find string, falling back to English
-    item = @englishMap[str]
-    if item and item[@locale]
-      locstr = item[@locale]
-    else 
-      locstr = str
+    # True if object passed in as arg (react style)
+    hasObject = false
 
-    # Fill in arguments
-    for i in [0...args.length]
-      locstr = locstr.replace("{" + i + "}", args[i])
-    return locstr
+    for arg in args
+      if arg and typeof(arg) == "object"
+        hasObject = true
+
+    if not hasObject
+      # Find string, falling back to English
+      item = @englishMap[str]
+      if item and item[@locale]
+        locstr = item[@locale]
+      else 
+        locstr = str
+
+      # Fill in arguments
+      for i in [0...args.length]
+        locstr = locstr.replace("{" + i + "}", args[i])
+      return locstr
+    else
+      # Split and do react-style replacement where string is made into array
+      parts = str.split(/(\{\d+\})/)
+
+      output = []
+      for part in parts
+        if part.match(/^\{\d+\}$/)
+          output.push(args[parseInt(part.substr(1, part.length - 2))])
+        else
+          output.push(part)
+      
+      return output
 
   # Determines if a string is localized
   isLocalized: (str) =>

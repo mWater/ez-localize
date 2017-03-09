@@ -50,6 +50,15 @@ String substitution:
 console.log(T("This works {0}%!", 100);
 ```
 
+React-style substitution:
+
+```
+console.log(T("This works {0}%!", { x: 10 });
+```
+
+will create array of ["This works ", { x: 10 }, "%!"]
+
+
 It handles Coffeescript and Handlebars too:
 
 ```
