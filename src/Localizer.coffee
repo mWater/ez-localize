@@ -36,17 +36,7 @@ module.exports = class Localizer
         hasObject = true
 
     if not hasObject
-      # Find string, falling back to English
-      item = @englishMap[str]
-      if item and item[@locale]
-        locstr = item[@locale]
-      else 
-        locstr = str
-
-      # Fill in arguments
-      for i in [0...args.length]
-        locstr = locstr.replace("{" + i + "}", args[i])
-      return locstr
+      return @localizePlainString(str, args...)
     else
       # Split and do react-style replacement where string is made into array
       parts = str.split(/(\{\d+\})/)
@@ -60,6 +50,20 @@ module.exports = class Localizer
       
       return output
 
+  # Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
+  localizePlainString: (str, args...) =>
+    # Find string, falling back to English
+    item = @englishMap[str]
+    if item and item[@locale]
+      locstr = item[@locale]
+    else 
+      locstr = str
+
+    # Fill in arguments
+    for i in [0...args.length]
+      locstr = locstr.replace("{" + i + "}", args[i])
+    return locstr
+
   # Determines if a string is localized
   isLocalized: (str) =>
     return str and @englishMap[str] and @englishMap[str][@locale]
@@ -70,4 +74,4 @@ module.exports = class Localizer
     global.T = @localizeString
     global.T.localizer = this
     if handlebars?
-      handlebars.registerHelper 'T', @localizeString
+      handlebars.registerHelper 'T', @localizePlainString
