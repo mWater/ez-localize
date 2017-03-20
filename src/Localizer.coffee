@@ -38,8 +38,15 @@ module.exports = class Localizer
     if not hasObject
       return @localizePlainString(str, args...)
     else
+      # Find string, falling back to English
+      item = @englishMap[str]
+      if item and item[@locale]
+        locstr = item[@locale]
+      else 
+        locstr = str
+
       # Split and do react-style replacement where string is made into array
-      parts = str.split(/(\{\d+\})/)
+      parts = locstr.split(/(\{\d+\})/)
 
       output = []
       for part in parts

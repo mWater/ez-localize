@@ -28,7 +28,7 @@ describe "Localizer", ->
   it "T replaces parameters", ->
     assert.equal @loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z"
 
-
   describe "react-style localization", ->
     it "returns array with objects", ->
-      assert.deepEqual @loc.T("a {0} b {1} c", { x: 1 }, { y: 2 }), ["a ", { x: 1 }, " b ", { y: 2 }, " c"]
+      assert.deepEqual @loc.T("a {0} b {1} c", { x: 1 }, { y: 2 }), ["x ", { y: 2 }, " y ", { x: 1 }, " z"]
+
