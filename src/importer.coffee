@@ -31,7 +31,7 @@ module.exports = (oldDataFile, xlsxFile, newDataFile) ->
 
   # Indexing the xlsx key string (making sure there is no doubles)
   for row in rows[1..]
-    if not row[0] or not row[0].value
+    if not row or not row[0] or not row[0].value
       continue
     base = row[0].value
     keyString = row[xlsxLocales.indexOf(base) + 1].value
@@ -49,7 +49,7 @@ module.exports = (oldDataFile, xlsxFile, newDataFile) ->
 
   # For each xlsx entry
   for row in rows[1..]
-    if not row[0] or not row[0].value
+    if not row or not row[0] or not row[0].value
       continue
     # Look up the reference string
     base = row[0].value
