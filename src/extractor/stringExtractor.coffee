@@ -1,10 +1,16 @@
 mdeps = require 'module-deps'
 through = require 'through'
 path = require 'path'
-uglify = require 'uglify-js'
-coffee = require 'coffee-script'
+acorn = require 'acorn'
+coffee = require 'coffeescript'
 handlebars = require 'handlebars'
+acorn = require("acorn")
+walk = require("acorn-walk")
 fs = require 'fs'
+coffeeify = require('coffeeify')
+hbsfy = require('hbsfy')
+tscriptify = require('tscriptify')
+typescript = require('typescript')
 
 # rootFile is path of starting point
 # Options include: (they are passed to browserify)
@@ -18,6 +24,7 @@ exports.findFromRootFile = (rootFile, options, callback) ->
     # Extract strings from item
     filename = item.id
     ext = path.extname(filename)
+    # console.log filename
 
     switch ext
       when '.coffee'
@@ -26,6 +33,8 @@ exports.findFromRootFile = (rootFile, options, callback) ->
         strings = strings.concat(exports.findInJs(fs.readFileSync(filename, 'utf-8')))
       when '.hbs'
         strings = strings.concat(exports.findInHbs(fs.readFileSync(filename, 'utf-8')))
+      when '.ts'
+        strings = strings.concat(exports.findInTs(fs.readFileSync(filename, 'utf-8')))
   , =>
     callback(strings)
 
@@ -40,32 +49,25 @@ exports.findFromRootFile = (rootFile, options, callback) ->
 
       return true
 
-  mdeps(path.resolve(rootFile), options).pipe(stream)
+  md = mdeps(options)
+  md.pipe(stream)
+  md.end({ file: path.resolve(rootFile) })
 
 exports.findInJs = (js) ->
   items = []
-  tree = uglify.parse(js)
-
-  walker = new uglify.TreeWalker (node) ->
-    # Extract direct calls to T
-    if node instanceof uglify.AST_Call and node.expression.name == "T"
-      if node.args[0] and typeof node.args[0].value == "string"
-        items.push node.args[0].value
-    # Extract property calls to T
-    if node instanceof uglify.AST_Call and node.expression.property == "T"
-      if node.args[0] and typeof node.args[0].value == "string"
-        items.push node.args[0].value
-  tree.walk(walker)
+  walk.simple(acorn.parse(js), {
+    CallExpression: (node) => 
+      if node.callee?.name == "T" and typeof(node.arguments[0]?.value) == "string"
+        items.push(node.arguments[0]?.value)
+      else if node.callee?.property?.name == "T" and typeof(node.arguments[0]?.value) == "string"
+        items.push(node.arguments[0]?.value)
+  })
   return items
 
 exports.findInCoffee = (cs) ->
   # Compile coffeescript
-  try
-    js = coffee.compile(cs)
-    return exports.findInJs(js)
-  catch err
-    console.error cs
-    throw err
+  js = coffee.compile(cs)
+  return exports.findInJs(js)
 
 findInHbsProgramNode = (node) ->
   items = []
@@ -86,8 +88,8 @@ exports.findInHbs = (hbs) ->
   tree = handlebars.parse(hbs)
   return findInHbsProgramNode(tree)
 
-exports.findInFile = (filename, contents) ->
-  return []
-
-exports.findInDir = (dir) ->
-  return []
+exports.findInTs = (ts) ->
+  js = typescript.transpileModule(ts, {
+    compilerOptions: { module: typescript.ModuleKind.CommonJS }
+  });
+  return exports.findInJs(js.outputText)

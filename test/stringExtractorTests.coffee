@@ -102,6 +102,16 @@ $ ->
       assert.deepEqual stringExtractor.findInHbs(code), 
         ['some string', 'another string']
 
+  describe "findInTs", ->
+    it "finds strings", ->
+      code = '''
+export default function(x: any) {
+  window.T("SDFSDF")
+  return x
+}
+      '''
+      assert.deepEqual stringExtractor.findInTs(code), 
+        ['SDFSDF']
 
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->
