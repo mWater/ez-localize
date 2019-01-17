@@ -14,8 +14,6 @@ typescript = require('typescript')
 
 # rootFile is path of starting point
 # Options include: (they are passed to browserify)
-# extensions: e.g. ['.js', '.coffee']
-# transformKey: e.g. "browserify"
 # externalModules: optional list of external modules to include. Otherwise only relative requires are processed
 # callback is called with list of strings
 exports.findFromRootFile = (rootFile, options, callback) ->
@@ -24,7 +22,6 @@ exports.findFromRootFile = (rootFile, options, callback) ->
     # Extract strings from item
     filename = item.id
     ext = path.extname(filename)
-    # console.log filename
 
     switch ext
       when '.coffee'
@@ -49,7 +46,7 @@ exports.findFromRootFile = (rootFile, options, callback) ->
 
       return true
 
-  md = mdeps(options)
+  md = mdeps({ extensions: ['.js', '.coffee', '.hbs', '.ts'], transform: [coffeeify, hbsfy, tscriptify] })
   md.pipe(stream)
   md.end({ file: path.resolve(rootFile) })
 
