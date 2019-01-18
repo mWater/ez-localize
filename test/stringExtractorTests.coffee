@@ -4,6 +4,7 @@ coffeeify = require 'coffeeify'
 hbsfy = require 'hbsfy'
 
 describe "stringExtractor", ->
+  @timeout(20000)
   describe "findInJs", ->
     it "finds strings", ->
       code = '''
@@ -115,8 +116,7 @@ export default function(x: any) {
 
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->
-      options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] } 
-      stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', options, (strings) =>
+      stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', {}, (strings) =>
         assert.deepEqual strings.sort(), ['a', 'b', 'c', 'd']
         done()
 

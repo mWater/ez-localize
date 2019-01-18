@@ -5,6 +5,7 @@ hbsfy = require 'hbsfy'
 _ = require 'underscore'
 
 describe "updateLocalizations", ->
+  @timeout(20000)
   it "creates localizations", (done) ->
     data = {}
     options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] }
