@@ -1,5 +1,5 @@
 fs = require 'fs'
-xlsx = require 'xlsx.js'
+xlsx = require 'xlsx'
 
 # dataFile: e.g. "localizations.json"
 # xlsxFile: path of file to export

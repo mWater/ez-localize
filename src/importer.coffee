@@ -1,5 +1,5 @@
 fs = require 'fs'
-xlsx = require 'xlsx.js'
+xlsx = require 'xlsx'
 _ = require 'lodash'
 
 # oldDataFile: e.g. "localizations.json"
