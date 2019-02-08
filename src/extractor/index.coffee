@@ -1,12 +1,11 @@
 fs = require 'fs'
 stringExtractor = require './stringExtractor'
 
-# rootFile: file to walk dependencies from
+# rootDirs: directories to extract from
 # dataFile: e.g. "localizations.json"
 # options: 
-#  all options for stringExtractor.findFromRootFile
 #  plus: extraStrings which includes extra strings that are not in the root file
-exports.updateLocalizationFile = (rootFile, dataFile, options, callback) ->
+exports.updateLocalizationFile = (rootDirs, dataFile, options, callback) ->
   # Read in data file
   if fs.existsSync(dataFile)
     localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
@@ -14,18 +13,18 @@ exports.updateLocalizationFile = (rootFile, dataFile, options, callback) ->
     localizations = { }
 
   # Update localizations
-  exports.updateLocalizations rootFile, localizations, options, ->
+  exports.updateLocalizations rootDirs, localizations, options, ->
     fs.writeFileSync(dataFile, JSON.stringify(localizations, null, 2), 'utf-8')
     callback()
 
-exports.updateLocalizations = (rootFile, data, options, callback) ->
+exports.updateLocalizations = (rootDirs, data, options, callback) ->
   if not data.locales
     data.locales = [{ code: "en", name: "English"}]
   if not data.strings
     data.strings = []
 
   # Get strings
-  stringExtractor.findFromRootFile rootFile, options, (strs) ->
+  stringExtractor.findFromRootDirs rootDirs, (strs) ->
     # Add extra strings
     if options.extraStrings
       strs = strs.concat(options.extraStrings)

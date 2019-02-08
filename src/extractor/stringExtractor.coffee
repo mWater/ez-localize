@@ -1,54 +1,41 @@
-mdeps = require 'module-deps'
-through = require 'through'
+fs = require 'fs'
+glob = require 'glob'
 path = require 'path'
-acorn = require 'acorn'
 coffee = require 'coffeescript'
 handlebars = require 'handlebars'
 acorn = require("acorn")
 walk = require("acorn-walk")
-fs = require 'fs'
-coffeeify = require('coffeeify')
 hbsfy = require('hbsfy')
-tscriptify = require('tscriptify')
 typescript = require('typescript')
 
-# rootFile is path of starting point
-# Options include: (they are passed to browserify)
-# externalModules: optional list of external modules to include. Otherwise only relative requires are processed
+# rootDirs are the root directories to find files in. node_modules is never entered
 # callback is called with list of strings
-exports.findFromRootFile = (rootFile, options, callback) ->
+exports.findFromRootDirs = (rootDirs, callback) ->
   strings = []
-  stream = through (item) =>
-    # Extract strings from item
-    filename = item.id
-    ext = path.extname(filename)
+  
+  for rootDir in rootDirs
+    filenames = glob.sync("**/*.@(js|coffee|ts|hbs)", { cwd: rootDir })
+    for filename in filenames
+      # Skip node_modules
+      if filename.match(/node_modules/)
+        continue
 
-    switch ext
-      when '.coffee'
-        strings = strings.concat(exports.findInCoffee(fs.readFileSync(filename, 'utf-8')))
-      when '.js'
-        strings = strings.concat(exports.findInJs(fs.readFileSync(filename, 'utf-8')))
-      when '.hbs'
-        strings = strings.concat(exports.findInHbs(fs.readFileSync(filename, 'utf-8')))
-      when '.ts'
-        strings = strings.concat(exports.findInTs(fs.readFileSync(filename, 'utf-8')))
-  , =>
-    callback(strings)
+      fullFilename = path.resolve(rootDir, filename)
+      console.log(filename)
+      contents = fs.readFileSync(fullFilename, 'utf-8')
 
-  oldFilter = options.filter  
-  externalModules = options.externalModules || []
+      ext = path.extname(filename)
+      switch ext
+        when '.coffee'
+          strings = strings.concat(exports.findInCoffee(contents))
+        when '.js'
+          strings = strings.concat(exports.findInJs(contents))
+        when '.hbs'
+          strings = strings.concat(exports.findInHbs(contents))
+        when '.ts'
+          strings = strings.concat(exports.findInTs(contents))
 
-  options.filter = (id) ->
-    # Only take relative paths or external modules
-    if id.match(/^\./) or (id in externalModules)
-      if oldFilter and not oldFilter(id)
-        return false
-
-      return true
-
-  md = mdeps({ extensions: ['.js', '.coffee', '.hbs', '.ts'], transform: [coffeeify, hbsfy, tscriptify] })
-  md.pipe(stream)
-  md.end({ file: path.resolve(rootFile) })
+  callback(strings)
 
 exports.findInJs = (js) ->
   items = []
