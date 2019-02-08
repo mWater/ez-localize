@@ -78,3 +78,7 @@ localizer.makeGlobal(handlebars);
 ```
 
 Only relative requires are included by default. To include another module, pass `externalModules` to options, an optional list of external modules to include
+
+## Localizing a JSON object
+
+To localize the strings inside a JSON object (plain javascript object), use require('ez-localize/lib/JsonLocalizer`)

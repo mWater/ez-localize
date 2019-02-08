@@ -4,8 +4,7 @@
   "description": "Super-simple localization of strings in a Node/Browserify application",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r coffeescript/register test/**/*Tests.coffee",
-    "prepublish": "gulp"
+    "test": "mocha -r coffeescript/register test/**/*Tests.coffee"
   },
   "repository": {
     "type": "git",
@@ -31,7 +30,6 @@
     "gulp": "^4.0.0",
     "gulp-coffee": "^1.4.2",
     "gulp-util": "^2.2.14",
-    "lodash": "~2.4.1",
     "sinon": "~1.8.2",
     "testem": "~0.6.7",
     "underscore": "^1.6.0",
@@ -44,11 +42,12 @@
     "coffeescript": "^2.3.2",
     "handlebars": "^1.3.0",
     "hbsfy": "^2.8.1",
+    "lodash": "^3.10.1",
     "minimist": "^1.1.1",
     "module-deps": "^6.2.0",
     "through": "^2.3.8",
     "tscriptify": "^0.1.3",
     "typescript": "^3.2.2",
-    "xlsx.js": "git+https://github.com/stephen-hardy/xlsx.js.git"
+    "xlsx": "^0.14.1"
   }
 }

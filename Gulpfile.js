@@ -10,7 +10,7 @@ gulp.task('coffee', function() {
 });
 
 gulp.task('copy', function() {
-	return gulp.src(['./src/**/*.js'])
+	return gulp.src(['./src/**/*.js', './src/**/*.d.ts'])
 		.pipe(gulp.dest('./lib/'));
 });
 

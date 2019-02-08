@@ -1,4 +1,2 @@
-lib/*
 node_modules
 test/browserified.js
-.idea/
