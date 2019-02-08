@@ -2,7 +2,7 @@ assert = require('chai').assert
 importer = require '../src/importer'
 
 describe "import xlsx file", ->
-  it "imports xlsx to localization",  ->
+  it "imports xlsx to localization", ->
     oldDataFile = __dirname + '/exportSample/localizedExportTest.json'
     newDataFile = __dirname + '/exportSample/localizedExportResult.json'
     importFile = __dirname + '/exportSample/toBeImported.xlsx'

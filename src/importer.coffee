@@ -20,5 +20,6 @@ module.exports = (oldDataFile, xlsxFile, newDataFile) ->
 
   # Write the whole thing to a JSon file
   fs.writeFileSync(newDataFile, JSON.stringify(localizations, null, 2), 'utf-8')
+  return localizations
 
  

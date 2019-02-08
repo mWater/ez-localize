@@ -116,11 +116,6 @@ export default function(x: any) {
 
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->
-      stringExtractor.findFromRootFile __dirname + '/requireSample/a.js', {}, (strings) =>
+      stringExtractor.findFromRootDirs [__dirname + '/requireSample'], (strings) =>
         assert.deepEqual strings.sort(), ['a', 'b', 'c', 'd']
-        done()
-
-    it "ignores external includes", (done) ->
-      stringExtractor.findFromRootFile __dirname + '/requireSample/ext.js', {}, (strings) =>
-        assert.deepEqual strings.sort(), ['hello']
         done()
