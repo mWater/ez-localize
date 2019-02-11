@@ -31,7 +31,7 @@ exports.findFromRootDirs = (rootDirs, callback) ->
       console.log(fullFilename)
       contents = fs.readFileSync(fullFilename, 'utf-8')
 
-      ext = path.extname(filename)
+      ext = path.extname(fullFilename)
       switch ext
         when '.coffee'
           strings = strings.concat(exports.findInCoffee(contents))
