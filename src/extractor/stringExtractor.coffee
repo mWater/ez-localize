@@ -17,15 +17,18 @@ exports.findFromRootDirs = (rootDirs, callback) ->
     if fs.lstatSync(rootDir).isDirectory()
       filenames = glob.sync("**/*.@(js|coffee|ts|hbs)", { cwd: rootDir })
     else 
-      filenames = [rootDir]
-      
+      filenames = ["."]
+
     for filename in filenames
       # Skip node_modules
       if filename.match(/node_modules/)
         continue
 
-      fullFilename = path.resolve(rootDir, filename)
-      console.log(filename)
+      if filename != "."
+        fullFilename = path.resolve(rootDir, filename)
+      else
+        fullFilename = path.resolve(rootDir)
+      console.log(fullFilename)
       contents = fs.readFileSync(fullFilename, 'utf-8')
 
       ext = path.extname(filename)
