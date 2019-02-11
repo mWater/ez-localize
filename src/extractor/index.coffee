@@ -1,7 +1,7 @@
 fs = require 'fs'
 stringExtractor = require './stringExtractor'
 
-# rootDirs: directories to extract from
+# rootDirs: directories to extract from. Can also include simple files
 # dataFile: e.g. "localizations.json"
 # options: 
 #  plus: extraStrings which includes extra strings that are not in the root file

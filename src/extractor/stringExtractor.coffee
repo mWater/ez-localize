@@ -8,13 +8,17 @@ walk = require("acorn-walk")
 hbsfy = require('hbsfy')
 typescript = require('typescript')
 
-# rootDirs are the root directories to find files in. node_modules is never entered
+# rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 # callback is called with list of strings
 exports.findFromRootDirs = (rootDirs, callback) ->
   strings = []
   
   for rootDir in rootDirs
-    filenames = glob.sync("**/*.@(js|coffee|ts|hbs)", { cwd: rootDir })
+    if fs.lstatSync(rootDir).isDirectory()
+      filenames = glob.sync("**/*.@(js|coffee|ts|hbs)", { cwd: rootDir })
+    else 
+      filenames = [rootDir]
+      
     for filename in filenames
       # Skip node_modules
       if filename.match(/node_modules/)
