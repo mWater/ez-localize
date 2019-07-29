@@ -113,6 +113,19 @@ export default function(x: any) {
       '''
       assert.deepEqual stringExtractor.findInTs(code), 
         ['SDFSDF']
+  
+    it "finds strings in tsx", ->
+      code = '''
+class Chip extends React.Component<any, any> {
+  render() {
+    return (
+      <div className="chip">{T("SDFSDF")}</div>
+    );
+  }
+}
+      '''
+      assert.deepEqual stringExtractor.findInTsx(code), 
+        ['SDFSDF']
 
   describe "findFromRoot", ->
     it "finds in coffee and hbs", (done) ->

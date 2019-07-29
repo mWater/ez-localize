@@ -15,7 +15,7 @@ exports.findFromRootDirs = (rootDirs, callback) ->
   
   for rootDir in rootDirs
     if fs.lstatSync(rootDir).isDirectory()
-      filenames = glob.sync("**/*.@(js|coffee|ts|hbs)", { cwd: rootDir })
+      filenames = glob.sync("**/*.@(js|coffee|tsx|ts|hbs)", { cwd: rootDir })
     else 
       filenames = ["."]
 
@@ -41,6 +41,8 @@ exports.findFromRootDirs = (rootDirs, callback) ->
           strings = strings.concat(exports.findInHbs(contents))
         when '.ts'
           strings = strings.concat(exports.findInTs(contents))
+        when '.tsx'
+          strings = strings.concat(exports.findInTsx(contents))
 
   callback(strings)
 
@@ -82,5 +84,14 @@ exports.findInHbs = (hbs) ->
 exports.findInTs = (ts) ->
   js = typescript.transpileModule(ts, {
     compilerOptions: { module: typescript.ModuleKind.CommonJS }
+  });
+  return exports.findInJs(js.outputText)
+
+exports.findInTsx = (tsx) ->
+  js = typescript.transpileModule(tsx, {
+    compilerOptions: { 
+      module: typescript.ModuleKind.CommonJS 
+      jsx: 'react'
+    }
   });
   return exports.findInJs(js.outputText)
