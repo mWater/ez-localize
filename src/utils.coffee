@@ -57,6 +57,8 @@ exports.changeBaseLocale = (strs, fromLocale, toLocale) ->
 exports.updateLocalizedStrings = (strs, updates) ->
   # Regularize CR/LF and trim
   regularize = (str) ->
+    if not str
+      return str
     return str.replace(/\r/g, "").trim()
 
   # Map updates by key
