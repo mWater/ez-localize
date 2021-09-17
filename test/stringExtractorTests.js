@@ -1,5 +1,7 @@
+// TODO: This file was created by bulk-decaffeinate.
+// Sanity-check the conversion and remove this comment.
 import { assert } from 'chai';
-import stringExtractor from '../src/extractor/stringExtractor';
+import * as stringExtractor from '../src/extractor/stringExtractor';
 import coffeeify from 'coffeeify';
 import hbsfy from 'hbsfy';
 
