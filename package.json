@@ -1,6 +1,6 @@
 {
   "name": "ez-localize",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Super-simple localization of strings in a Node/Browserify application",
   "main": "lib/index.js",
   "scripts": {
