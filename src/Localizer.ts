@@ -1,3 +1,5 @@
+import { Locale, LocalizedString, LocalizerData } from "."
+
 /**
  * Localizer is a function that sets up global variable "T" which is
  * used to translate strings. Also sets up Handlebars helper with same name
@@ -5,10 +7,18 @@
  * Helper "T" maps to Localizer "localizeString" function
  */
 export default class Localizer {
-  constructor(data: any, locale = "en") {
+  data: LocalizerData
+
+  /** Current locale */
+  locale: string
+
+  englishMap: { [english: string]: LocalizedString }
+
+  /** Locale defaults to "en" */
+  constructor(data: LocalizerData, locale?: string) {
     this.T = this.T.bind(this)
     this.data = data
-    this.locale = locale
+    this.locale = locale || "en"
 
     // Index strings by English if data present
     this.englishMap = {}
@@ -19,11 +29,12 @@ export default class Localizer {
     }
   }
 
-  setLocale(code: any) {
-    return (this.locale = code)
+  /** Set the current locale */
+  setLocale(locale: string): void {
+    this.locale = locale
   }
 
-  getLocales() {
+  getLocales(): Locale[] {
     return this.data.locales
   }
 
@@ -92,16 +103,16 @@ export default class Localizer {
     return locstr
   }
 
-  // Determines if a string is localized
-  isLocalized = (str: any) => {
-    return str && this.englishMap[str] && this.englishMap[str][this.locale]
+  /** Determines if a string is localized */
+  isLocalized(str: string): boolean {
+    return str != null && this.englishMap[str] != null && this.englishMap[str][this.locale] != null
   }
 
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none
   makeGlobal(handlebars: any) {
-    global.T = this.localizeString
-    global.T.localizer = this
+    (global as any).T = this.localizeString
+    (global as any).T.localizer = this
     if (handlebars != null) {
       return handlebars.registerHelper("T", this.localizePlainString)
     }

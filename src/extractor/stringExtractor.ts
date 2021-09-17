@@ -5,10 +5,10 @@ import glob from "glob"
 import path from "path"
 import coffee from "coffeescript"
 import handlebars from "handlebars"
-import acorn from "acorn"
-import walk from "acorn-walk"
-import hbsfy from "hbsfy"
+import * as acorn from "acorn"
+import * as walk from "acorn-walk"
 import typescript from "typescript"
+import { LocalizedString } from ".."
 
 // rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 // callback is called with list of strings
@@ -76,13 +76,13 @@ export function findInJs(this: any, js: any) {
   return items
 }
 
-export function findInCoffee(cs: any) {
+export function findInCoffee(cs: any): LocalizedString[] {
   // Compile coffeescript
   const js = coffee.compile(cs)
   return exports.findInJs(js)
 }
 
-function findInHbsProgramNode(node: any) {
+function findInHbsProgramNode(node: any): LocalizedString[] {
   let items = []
 
   for (let stat of node.statements) {
@@ -119,7 +119,7 @@ export function findInTsx(tsx: any) {
   const js = typescript.transpileModule(tsx, {
     compilerOptions: {
       module: typescript.ModuleKind.CommonJS,
-      jsx: "react"
+      jsx: typescript.JsxEmit.ReactJSX
     }
   })
   return exports.findInJs(js.outputText)

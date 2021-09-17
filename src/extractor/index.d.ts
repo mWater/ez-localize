@@ -1,4 +1,4 @@
-import { LocalizerData } from "../.."
+import { LocalizerData } from ".."
 
 /**
  * Updates a localization file on disk

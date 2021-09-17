@@ -22,30 +22,10 @@ export interface LocalizerData {
   strings: LocalizedString[]
 }
 
-/** Localizer which has a lookup of translations */
-export class Localizer {
-  /** Current locale */
-  locale: string
+export { default as Localizer } from './Localizer'
 
-  /** Locale defaults to "en" */
-  constructor(data: LocalizerData, locale?: string)
-
-  /** Set the current locale */
-  setLocale(locale: string): void
-
-  getLocales(): Locale[]
-
-  /** Localize a string */
-  T: LocalizeString
-
-  /** Same as T */
-  localizeString: LocalizeString
-
-  /** Determines if a string is localized */
-  isLocalized(str: string): boolean
-}
-
-export const defaultLocalizer: Localizer
+// Create default localizer
+var defaultLocalizer = new exports.Localizer()
 
 /** Create a default T that does nothing */
-export const defaultT: LocalizeString
+export const defaultT = defaultLocalizer.T

@@ -1,22 +1,9 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import _ from "lodash"
 import xlsx from "xlsx"
+import { Locale, LocalizedString } from "."
 
-// Extracts localized strings from a plain object
-export function extractLocalizedStrings(
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  this: any,
-  obj: any
-) {
+/** Extracts localized strings from a plain object */
+export function extractLocalizedStrings(obj: any): LocalizedString[] {
   if (obj == null) {
     return []
   }
@@ -31,20 +18,20 @@ export function extractLocalizedStrings(
   // If array, concat each
   if (_.isArray(obj)) {
     for (let item of obj) {
-      strs = strs.concat(this.extractLocalizedStrings(item))
+      strs = strs.concat(extractLocalizedStrings(item))
     }
   } else if (_.isObject(obj)) {
     for (let key in obj) {
       const value = obj[key]
-      strs = strs.concat(this.extractLocalizedStrings(value))
+      strs = strs.concat(extractLocalizedStrings(value))
     }
   }
 
   return strs
 }
 
-// Keep unique base language string combinations
-export function dedupLocalizedStrings(strs: any) {
+/** Keep unique base language string combinations */
+export function dedupLocalizedStrings(strs: LocalizedString[]): LocalizedString[] {
   const out = []
 
   const keys = {}
@@ -59,9 +46,10 @@ export function dedupLocalizedStrings(strs: any) {
   return out
 }
 
-// Change the base locale for a set of localizations.
-// Works by making whatever the user sees as the toLocale base
-export function changeBaseLocale(strs: any, fromLocale: any, toLocale: any) {
+/** Change the base locale for a set of localizations.
+ * Works by making whatever the user sees as the toLocale base
+ */
+export function changeBaseLocale(strs: LocalizedString[], fromLocale: string, toLocale: string): void {
   for (let str of strs) {
     // Get displayed
     var displayed
@@ -80,8 +68,8 @@ export function changeBaseLocale(strs: any, fromLocale: any, toLocale: any) {
   }
 }
 
-// Update a set of strings based on newly localized ones
-export function updateLocalizedStrings(strs: any, updates: any) {
+/** Update a set of strings based on newly localized ones */
+export function updateLocalizedStrings(strs: LocalizedString[], updates: LocalizedString[]): void {
   // Regularize CR/LF and trim
   const regularize = (str: any) => str.replace(/\r/g, "").trim()
 
@@ -111,10 +99,10 @@ export function updateLocalizedStrings(strs: any, updates: any) {
   }
 }
 
-// Exports localized strings for specified locales to XLSX file.
-export function exportXlsx(locales: any, strs: any) {
+/** Exports localized strings for specified locales to XLSX file. Returns base64 */
+export function exportXlsx(locales: Locale[], strs: LocalizedString[]): string {
   let locale
-  const wb = { SheetNames: [], Sheets: {} }
+  const wb: any = { SheetNames: [], Sheets: {} }
 
   const range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } }
   const ws = {}
@@ -188,14 +176,11 @@ export function exportXlsx(locales: any, strs: any) {
   return wbout
 }
 
-_ = require("lodash")
-xlsx = require("xlsx")
-
-// Import from base64 xlsx file, returning localized strings
-export function importXlsx(locales: any, xlsxFile: any) {
+/** Import from base64 excel */
+export function importXlsx(locales: Locale[], xlsxFile: string): LocalizedString[] {
   const wb = xlsx.read(xlsxFile, { type: "base64" })
 
-  const ws = wb.Sheets[wb.SheetNames[0]]
+  const ws = wb.Sheets[wb.SheetNames[0]]!
 
   // If English is not a locale, append it, as built-in form elements
   // are specified in English
@@ -206,7 +191,7 @@ export function importXlsx(locales: any, xlsxFile: any) {
   const strs = []
 
   // Get the range of cells
-  const lastCell = ws["!ref"].split(":")[1]
+  const lastCell = ws["!ref"]!.split(":")[1]
 
   const totalColumns = xlsx.utils.decode_cell(lastCell).c + 1
   const totalRows = xlsx.utils.decode_cell(lastCell).r + 1
