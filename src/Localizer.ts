@@ -8,7 +8,7 @@
 let Localizer
 
 export default Localizer = class Localizer {
-  constructor(data, locale = "en") {
+  constructor(data: any, locale = "en") {
     this.T = this.T.bind(this)
     this.data = data
     this.locale = locale
@@ -22,7 +22,7 @@ export default Localizer = class Localizer {
     }
   }
 
-  setLocale(code) {
+  setLocale(code: any) {
     return (this.locale = code)
   }
 
@@ -30,11 +30,11 @@ export default Localizer = class Localizer {
     return this.data.locales
   }
 
-  T(str, ...args) {
+  T(str: any, ...args: any[]) {
     return this.localizeString.apply(this, arguments)
   }
 
-  localizeString = (str, ...args) => {
+  localizeString = (str: any, ...args: any[]) => {
     // Null is just pass-through
     if (str == null) {
       return str
@@ -78,7 +78,7 @@ export default Localizer = class Localizer {
   }
 
   // Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
-  localizePlainString = (str, ...args) => {
+  localizePlainString = (str: any, ...args: any[]) => {
     // Find string, falling back to English
     let locstr
     const item = this.englishMap[str]
@@ -96,13 +96,13 @@ export default Localizer = class Localizer {
   }
 
   // Determines if a string is localized
-  isLocalized = (str) => {
+  isLocalized = (str: any) => {
     return str && this.englishMap[str] && this.englishMap[str][this.locale]
   }
 
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none
-  makeGlobal(handlebars) {
+  makeGlobal(handlebars: any) {
     global.T = this.localizeString
     global.T.localizer = this
     if (handlebars != null) {

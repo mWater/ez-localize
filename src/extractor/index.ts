@@ -7,9 +7,9 @@ import * as stringExtractor from "./stringExtractor"
 // dataFile: e.g. "localizations.json"
 // options:
 //  plus: extraStrings which includes extra strings that are not in the root file
-export function updateLocalizationFile(rootDirs, dataFile, options, callback) {
+export function updateLocalizationFile(rootDirs: any, dataFile: any, options: any, callback: any) {
   // Read in data file
-  let localizations
+  let localizations: any
   if (fs.existsSync(dataFile)) {
     localizations = JSON.parse(fs.readFileSync(dataFile, "utf-8"))
   } else {
@@ -23,7 +23,7 @@ export function updateLocalizationFile(rootDirs, dataFile, options, callback) {
   })
 }
 
-export function updateLocalizations(rootDirs, data, options, callback) {
+export function updateLocalizations(rootDirs: any, data: any, options: any, callback: any) {
   if (!data.locales) {
     data.locales = [{ code: "en", name: "English" }]
   }
@@ -32,7 +32,7 @@ export function updateLocalizations(rootDirs, data, options, callback) {
   }
 
   // Get strings
-  return stringExtractor.findFromRootDirs(rootDirs, function (strs) {
+  return stringExtractor.findFromRootDirs(rootDirs, function (strs: any) {
     // Add extra strings
     let loc, str
     if (options.extraStrings) {

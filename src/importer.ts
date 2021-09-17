@@ -8,7 +8,7 @@ import { updateLocalizedStrings } from "./utils"
 // oldDataFile: e.g. "localizations.json"
 // xlsxFile: path of file to export
 // newDataFile: can be the same as oldDataFile (different when testing)
-export default function (oldDataFile, xlsxFile, newDataFile) {
+export default function (oldDataFile: any, xlsxFile: any, newDataFile: any) {
   // Read the xlsx file and get the locales
   const base64File = fs.readFileSync(xlsxFile, "base64")
 
@@ -18,7 +18,7 @@ export default function (oldDataFile, xlsxFile, newDataFile) {
   updateLocalizedStrings(localizations.strings, updates)
 
   // Sort by used
-  localizations.strings = _.sortBy(localizations.strings, function (l) {
+  localizations.strings = _.sortBy(localizations.strings, function (l: any) {
     if (l._unused) {
       return 1
     } else {

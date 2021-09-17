@@ -6,7 +6,7 @@ import { exportXlsx } from "./utils"
 
 // dataFile: e.g. "localizations.json"
 // xlsxFile: path of file to export
-export default exportLocalizationFileToXlsx = function (dataFile, xlsxFile) {
+export default exportLocalizationFileToXlsx = function (dataFile: any, xlsxFile: any) {
   // Read in data file
   const localizations = JSON.parse(fs.readFileSync(dataFile, "utf-8"))
 

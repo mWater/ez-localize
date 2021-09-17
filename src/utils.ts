@@ -4,7 +4,19 @@ import _ from "lodash"
 import xlsx from "xlsx"
 
 // Extracts localized strings from a plain object
-export function extractLocalizedStrings(obj) {
+export function extractLocalizedStrings(
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  this: any,
+  obj: any
+) {
   if (obj == null) {
     return []
   }
@@ -14,7 +26,7 @@ export function extractLocalizedStrings(obj) {
     return [obj]
   }
 
-  let strs = []
+  let strs: any = []
 
   // If array, concat each
   if (_.isArray(obj)) {
@@ -32,7 +44,7 @@ export function extractLocalizedStrings(obj) {
 }
 
 // Keep unique base language string combinations
-export function dedupLocalizedStrings(strs) {
+export function dedupLocalizedStrings(strs: any) {
   const out = []
 
   const keys = {}
@@ -49,7 +61,7 @@ export function dedupLocalizedStrings(strs) {
 
 // Change the base locale for a set of localizations.
 // Works by making whatever the user sees as the toLocale base
-export function changeBaseLocale(strs, fromLocale, toLocale) {
+export function changeBaseLocale(strs: any, fromLocale: any, toLocale: any) {
   for (let str of strs) {
     // Get displayed
     var displayed
@@ -69,9 +81,9 @@ export function changeBaseLocale(strs, fromLocale, toLocale) {
 }
 
 // Update a set of strings based on newly localized ones
-export function updateLocalizedStrings(strs, updates) {
+export function updateLocalizedStrings(strs: any, updates: any) {
   // Regularize CR/LF and trim
-  const regularize = (str) => str.replace(/\r/g, "").trim()
+  const regularize = (str: any) => str.replace(/\r/g, "").trim()
 
   // Map updates by key
   const updateMap = {}
@@ -100,14 +112,14 @@ export function updateLocalizedStrings(strs, updates) {
 }
 
 // Exports localized strings for specified locales to XLSX file.
-export function exportXlsx(locales, strs) {
+export function exportXlsx(locales: any, strs: any) {
   let locale
   const wb = { SheetNames: [], Sheets: {} }
 
   const range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } }
   const ws = {}
 
-  function addCell(row, column, value) {
+  function addCell(row: any, column: any, value: any) {
     // Update ranges
     if (range.s.r > row) {
       range.s.r = row
@@ -180,7 +192,7 @@ _ = require("lodash")
 xlsx = require("xlsx")
 
 // Import from base64 xlsx file, returning localized strings
-export function importXlsx(locales, xlsxFile) {
+export function importXlsx(locales: any, xlsxFile: any) {
   const wb = xlsx.read(xlsxFile, { type: "base64" })
 
   const ws = wb.Sheets[wb.SheetNames[0]]

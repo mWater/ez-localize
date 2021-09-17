@@ -100,7 +100,7 @@ describe("Localizer", function () {
         { code: "en", name: "English" },
         { code: "es", name: "Espanol" }
       ]
-      return (this.roundtrip = function (strs) {
+      return (this.roundtrip = function (strs: any) {
         const xlsxFile = this.localizer.exportXlsx(this.locales, strs)
         return this.localizer.importXlsx(this.locales, xlsxFile)
       })
