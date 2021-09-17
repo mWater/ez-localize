@@ -1,11 +1,13 @@
-fs = require 'fs'
-exportXlsx = require('./utils').exportXlsx
+let exportLocalizationFileToXlsx;
+import fs from 'fs';
+import { exportXlsx } from './utils';
 
-# dataFile: e.g. "localizations.json"
-# xlsxFile: path of file to export
-module.exports = exportLocalizationFileToXlsx = (dataFile, xlsxFile) ->
-  # Read in data file
-  localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
+// dataFile: e.g. "localizations.json"
+// xlsxFile: path of file to export
+export default exportLocalizationFileToXlsx = function(dataFile, xlsxFile) {
+  // Read in data file
+  const localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
 
-  ws = exportXlsx(localizations.locales, localizations.strings)
-  fs.writeFileSync(xlsxFile, ws, 'base64')
+  const ws = exportXlsx(localizations.locales, localizations.strings);
+  return fs.writeFileSync(xlsxFile, ws, 'base64');
+};

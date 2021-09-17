@@ -1,61 +1,70 @@
-assert = require('chai').assert
-extractor = require '../src/extractor'
-coffeeify = require 'coffeeify'
-hbsfy = require 'hbsfy'
-_ = require 'underscore'
+import { assert } from 'chai';
+import extractor from '../src/extractor';
+import coffeeify from 'coffeeify';
+import hbsfy from 'hbsfy';
+import _ from 'underscore';
 
-describe "updateLocalizations", ->
-  @timeout(20000)
-  it "creates localizations", (done) ->
-    data = {}
-    extractor.updateLocalizations [__dirname + '/requireSample'], data, {}, ->
-      assert.deepEqual data.locales, [{ code: "en", name: "English"}]
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }]
-      done()
+describe("updateLocalizations", function() {
+  this.timeout(20000);
+  it("creates localizations", function(done) {
+    const data = {};
+    return extractor.updateLocalizations([__dirname + '/requireSample'], data, {}, function() {
+      assert.deepEqual(data.locales, [{ code: "en", name: "English"}]);
+      assert.deepEqual(_.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }]);
+      return done();
+    });
+  });
 
-  it "preserves languages", (done) ->
-    data = {
+  it("preserves languages", function(done) {
+    const data = {
       locales: [
-        { code: "en", name: "English" }
+        { code: "en", name: "English" },
         { code: "es", name: "Espanol" }
-      ]
+      ],
       strings: [
         { _base: "en", en: "b", es: "b-es" }
       ]
-    }
-    extractor.updateLocalizations [__dirname + '/requireSample'], data, {}, ->
-      assert.deepEqual data.locales, [{ code: "en", name: "English"}, { code: "es", name: "Espanol" }]
-      assert.deepEqual _.sortBy(data.strings, "en"), [
-        { _base: "en", en: "a", es: "" }
-        { _base: "en", en: "b", es: "b-es" }
-        { _base: "en", en: "c", es: "" }
+    };
+    return extractor.updateLocalizations([__dirname + '/requireSample'], data, {}, function() {
+      assert.deepEqual(data.locales, [{ code: "en", name: "English"}, { code: "es", name: "Espanol" }]);
+      assert.deepEqual(_.sortBy(data.strings, "en"), [
+        { _base: "en", en: "a", es: "" },
+        { _base: "en", en: "b", es: "b-es" },
+        { _base: "en", en: "c", es: "" },
         { _base: "en", en: "d", es: "" }
-      ]
-      done()
+      ]);
+      return done();
+    });
+  });
 
 
-  it "marks unused", (done) ->
-    data = {
+  it("marks unused", function(done) {
+    const data = {
       locales: [
         { code: "en", name: "English" }
-      ]
+      ],
       strings: [
         { _base: "en", en: "x" }
       ]
-    }
-    extractor.updateLocalizations [__dirname + '/requireSample'], data, {}, ->
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }, { _base: "en", en: "x", _unused: true }]
-      done()
+    };
+    return extractor.updateLocalizations([__dirname + '/requireSample'], data, {}, function() {
+      assert.deepEqual(_.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }, { _base: "en", en: "x", _unused: true }]);
+      return done();
+    });
+  });
 
-  it "removes unused", (done) ->
-    data = {
+  return it("removes unused", function(done) {
+    const data = {
       locales: [
         { code: "en", name: "English" }
-      ]
+      ],
       strings: [
         { _base: "en", en: "b", _unused: true }
       ]
-    }
-    extractor.updateLocalizations [__dirname + '/requireSample'], data, {}, ->
-      assert.deepEqual _.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }]
-      done()
+    };
+    return extractor.updateLocalizations([__dirname + '/requireSample'], data, {}, function() {
+      assert.deepEqual(_.sortBy(data.strings, "en"), [{ _base: "en", en: "a" }, { _base: "en", en: "b" }, { _base: "en", en: "c" }, { _base: "en", en: "d" }]);
+      return done();
+    });
+  });
+});

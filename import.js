@@ -1,20 +1,20 @@
-minimist = require('minimist')
-importer = require('./src/importer')
+import minimist from 'minimist';
+import importer from './src/importer';
 
-# Process args
-args = minimist(process.argv.slice(2))
+// Process args
+const args = minimist(process.argv.slice(2));
 
-if not args._.length > 0
-  console.log "Usage: <XLSX file input> <JSON file input> [<JSON file output>]"
-  return 
+if (!args._.length > 0) {
+  console.log("Usage: <XLSX file input> <JSON file input> [<JSON file output>]");
+  return; 
+}
 
-dataFile = args._[0]
-xlsxFile = args._[1]
-newDataFile = args._[2]
+const dataFile = args._[0];
+const xlsxFile = args._[1];
+let newDataFile = args._[2];
 
-if not newDataFile?
-  newDataFile = dataFile
+if ((newDataFile == null)) {
+  newDataFile = dataFile;
+}
 
-importer(dataFile, xlsxFile, newDataFile, () ->
-  console.log 'Done Importing'
-)
+importer(dataFile, xlsxFile, newDataFile, () => console.log('Done Importing'));

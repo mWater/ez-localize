@@ -1,97 +1,124 @@
-fs = require 'fs'
-glob = require 'glob'
-path = require 'path'
-coffee = require 'coffeescript'
-handlebars = require 'handlebars'
-acorn = require("acorn")
-walk = require("acorn-walk")
-hbsfy = require('hbsfy')
-typescript = require('typescript')
+import fs from 'fs';
+import glob from 'glob';
+import path from 'path';
+import coffee from 'coffeescript';
+import handlebars from 'handlebars';
+import acorn from "acorn";
+import walk from "acorn-walk";
+import hbsfy from 'hbsfy';
+import typescript from 'typescript';
 
-# rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
-# callback is called with list of strings
-exports.findFromRootDirs = (rootDirs, callback) ->
-  strings = []
+// rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
+// callback is called with list of strings
+export function findFromRootDirs(rootDirs, callback) {
+  let strings = [];
   
-  for rootDir in rootDirs
-    if fs.lstatSync(rootDir).isDirectory()
-      filenames = glob.sync("**/*.@(js|coffee|tsx|ts|hbs)", { cwd: rootDir })
-    else 
-      filenames = ["."]
+  for (let rootDir of rootDirs) {
+    var filenames;
+    if (fs.lstatSync(rootDir).isDirectory()) {
+      filenames = glob.sync("**/*.@(js|coffee|tsx|ts|hbs)", { cwd: rootDir });
+    } else { 
+      filenames = ["."];
+    }
 
-    for filename in filenames
-      # Skip node_modules
-      if filename.match(/node_modules/)
-        continue
+    for (let filename of filenames) {
+      // Skip node_modules
+      var fullFilename;
+      if (filename.match(/node_modules/)) {
+        continue;
+      }
 
-      if filename != "."
-        fullFilename = path.resolve(rootDir, filename)
-      else
-        fullFilename = path.resolve(rootDir)
-      console.log(fullFilename)
-      contents = fs.readFileSync(fullFilename, 'utf-8')
+      if (filename !== ".") {
+        fullFilename = path.resolve(rootDir, filename);
+      } else {
+        fullFilename = path.resolve(rootDir);
+      }
+      console.log(fullFilename);
+      const contents = fs.readFileSync(fullFilename, 'utf-8');
 
-      ext = path.extname(fullFilename)
-      switch ext
-        when '.coffee'
-          strings = strings.concat(exports.findInCoffee(contents))
-        when '.js'
-          strings = strings.concat(exports.findInJs(contents))
-        when '.hbs'
-          strings = strings.concat(exports.findInHbs(contents))
-        when '.ts'
-          strings = strings.concat(exports.findInTs(contents))
-        when '.tsx'
-          strings = strings.concat(exports.findInTsx(contents))
+      const ext = path.extname(fullFilename);
+      switch (ext) {
+        case '.coffee':
+          strings = strings.concat(exports.findInCoffee(contents));
+          break;
+        case '.js':
+          strings = strings.concat(exports.findInJs(contents));
+          break;
+        case '.hbs':
+          strings = strings.concat(exports.findInHbs(contents));
+          break;
+        case '.ts':
+          strings = strings.concat(exports.findInTs(contents));
+          break;
+        case '.tsx':
+          strings = strings.concat(exports.findInTsx(contents));
+          break;
+      }
+    }
+  }
 
-  callback(strings)
+  return callback(strings);
+}
 
-exports.findInJs = (js) ->
-  items = []
+export function findInJs(js) {
+  const items = [];
   walk.simple(acorn.parse(js), {
-    CallExpression: (node) => 
-      if node.callee?.name == "T" and typeof(node.arguments[0]?.value) == "string"
-        items.push(node.arguments[0]?.value)
-      else if node.callee?.property?.name == "T" and typeof(node.arguments[0]?.value) == "string"
-        items.push(node.arguments[0]?.value)
-  })
-  return items
+    CallExpression: function(node) { 
+      if ((node.callee?.name === "T") && (typeof(node.arguments[0]?.value) === "string")) {
+        return items.push(node.arguments[0]?.value);
+      } else if ((node.callee?.property?.name === "T") && (typeof(node.arguments[0]?.value) === "string")) {
+        return items.push(node.arguments[0]?.value);
+      }
+    }.bind(this)
+  });
+  return items;
+}
 
-exports.findInCoffee = (cs) ->
-  # Compile coffeescript
-  js = coffee.compile(cs)
-  return exports.findInJs(js)
+export function findInCoffee(cs) {
+  // Compile coffeescript
+  const js = coffee.compile(cs);
+  return exports.findInJs(js);
+}
 
-findInHbsProgramNode = (node) ->
-  items = []
+var findInHbsProgramNode = function(node) {
+  let items = [];
 
-  for stat in node.statements
-    if stat.type == "mustache" and stat.id.string == "T"
-      items.push stat.params[0].string
-    if stat.type == "block"
-      if stat.program
-        items = items.concat(findInHbsProgramNode(stat.program))
-      if stat.inverse
-        items = items.concat(findInHbsProgramNode(stat.inverse))
-  return items
+  for (let stat of node.statements) {
+    if ((stat.type === "mustache") && (stat.id.string === "T")) {
+      items.push(stat.params[0].string);
+    }
+    if (stat.type === "block") {
+      if (stat.program) {
+        items = items.concat(findInHbsProgramNode(stat.program));
+      }
+      if (stat.inverse) {
+        items = items.concat(findInHbsProgramNode(stat.inverse));
+      }
+    }
+  }
+  return items;
+};
 
-exports.findInHbs = (hbs) ->
-  items = []
+export function findInHbs(hbs) {
+  const items = [];
 
-  tree = handlebars.parse(hbs)
-  return findInHbsProgramNode(tree)
+  const tree = handlebars.parse(hbs);
+  return findInHbsProgramNode(tree);
+}
 
-exports.findInTs = (ts) ->
-  js = typescript.transpileModule(ts, {
+export function findInTs(ts) {
+  const js = typescript.transpileModule(ts, {
     compilerOptions: { module: typescript.ModuleKind.CommonJS }
   });
-  return exports.findInJs(js.outputText)
+  return exports.findInJs(js.outputText);
+}
 
-exports.findInTsx = (tsx) ->
-  js = typescript.transpileModule(tsx, {
+export function findInTsx(tsx) {
+  const js = typescript.transpileModule(tsx, {
     compilerOptions: { 
-      module: typescript.ModuleKind.CommonJS 
+      module: typescript.ModuleKind.CommonJS, 
       jsx: 'react'
     }
   });
-  return exports.findInJs(js.outputText)
+  return exports.findInJs(js.outputText);
+}

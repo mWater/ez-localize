@@ -1,68 +1,89 @@
-fs = require 'fs'
-stringExtractor = require './stringExtractor'
+import fs from 'fs';
+import stringExtractor from './stringExtractor';
 
-# rootDirs: directories to extract from. Can also include simple files
-# dataFile: e.g. "localizations.json"
-# options: 
-#  plus: extraStrings which includes extra strings that are not in the root file
-exports.updateLocalizationFile = (rootDirs, dataFile, options, callback) ->
-  # Read in data file
-  if fs.existsSync(dataFile)
-    localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'))
-  else 
-    localizations = { }
+// rootDirs: directories to extract from. Can also include simple files
+// dataFile: e.g. "localizations.json"
+// options: 
+//  plus: extraStrings which includes extra strings that are not in the root file
+export function updateLocalizationFile(rootDirs, dataFile, options, callback) {
+  // Read in data file
+  let localizations;
+  if (fs.existsSync(dataFile)) {
+    localizations = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+  } else { 
+    localizations = { };
+  }
 
-  # Update localizations
-  exports.updateLocalizations rootDirs, localizations, options, ->
-    fs.writeFileSync(dataFile, JSON.stringify(localizations, null, 2), 'utf-8')
-    callback()
+  // Update localizations
+  return exports.updateLocalizations(rootDirs, localizations, options, function() {
+    fs.writeFileSync(dataFile, JSON.stringify(localizations, null, 2), 'utf-8');
+    return callback();
+  });
+}
 
-exports.updateLocalizations = (rootDirs, data, options, callback) ->
-  if not data.locales
-    data.locales = [{ code: "en", name: "English"}]
-  if not data.strings
-    data.strings = []
+export function updateLocalizations(rootDirs, data, options, callback) {
+  if (!data.locales) {
+    data.locales = [{ code: "en", name: "English"}];
+  }
+  if (!data.strings) {
+    data.strings = [];
+  }
 
-  # Get strings
-  stringExtractor.findFromRootDirs rootDirs, (strs) ->
-    # Add extra strings
-    if options.extraStrings
-      strs = strs.concat(options.extraStrings)
+  // Get strings
+  return stringExtractor.findFromRootDirs(rootDirs, function(strs) {
+    // Add extra strings
+    let loc, str;
+    if (options.extraStrings) {
+      strs = strs.concat(options.extraStrings);
+    }
       
-    # Create map of english
-    map = {}
-    for loc in data.strings
-      map[loc.en] = loc
+    // Create map of english
+    const map = {};
+    for (loc of data.strings) {
+      map[loc.en] = loc;
+    }
 
-    for str in strs
-      # Create item if doesn't exist
-      if not map[str]
-        string = { _base: "en", en: str }
-        for loc in data.locales
-          if loc.code != "en"
-            string[loc.code] = ""
-        data.strings.push string
-        map[string.en] = string
-      else
-        # Add base if not present
-        if not map[str]._base
-          map[str]._base = "en"          
+    for (str of strs) {
+      // Create item if doesn't exist
+      if (!map[str]) {
+        const string = { _base: "en", en: str };
+        for (loc of data.locales) {
+          if (loc.code !== "en") {
+            string[loc.code] = "";
+          }
+        }
+        data.strings.push(string);
+        map[string.en] = string;
+      } else {
+        // Add base if not present
+        if (!map[str]._base) {
+          map[str]._base = "en";          
+        }
 
-        # Just add missing languages
-        for loc in data.locales
-          if loc.code != "en" and not map[str][loc.code]?
-            map[str][loc.code] = ""
+        // Just add missing languages
+        for (loc of data.locales) {
+          if ((loc.code !== "en") && (map[str][loc.code] == null)) {
+            map[str][loc.code] = "";
+          }
+        }
+      }
+    }
 
-    # Mark unused
-    known = {}
-    for str in strs
-      known[str] = true
+    // Mark unused
+    const known = {};
+    for (str of strs) {
+      known[str] = true;
+    }
 
-    for item in data.strings
-      if not known[item.en]
-        item._unused = true
-      else
-        delete item._unused
+    for (let item of data.strings) {
+      if (!known[item.en]) {
+        item._unused = true;
+      } else {
+        delete item._unused;
+      }
+    }
 
-    callback()
+    return callback();
+  });
+}
 

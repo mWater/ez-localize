@@ -1,15 +1,16 @@
-minimist = require('minimist')
-exporter = require './src/exporter'
+import minimist from 'minimist';
+import exporter from './src/exporter';
 
-# Process args
-args = minimist(process.argv.slice(2))
+// Process args
+const args = minimist(process.argv.slice(2));
 
-if not args._.length > 0
-  console.log "Usage: <JSON file input> <XLSX file output>"
-  return 
+if (!args._.length > 0) {
+  console.log("Usage: <JSON file input> <XLSX file output>");
+  return; 
+}
 
-dataFile = args._[0]
-xlsxFile = args._[1]
+const dataFile = args._[0];
+const xlsxFile = args._[1];
 
-exporter(dataFile, xlsxFile)
-console.log "Export complete to #{xlsxFile}"
+exporter(dataFile, xlsxFile);
+console.log(`Export complete to ${xlsxFile}`);
