@@ -111,8 +111,8 @@ export default class Localizer {
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none
   makeGlobal(handlebars: any) {
-    (global as any).T = this.localizeString
-    (global as any).T.localizer = this
+    (global as any).T = this.localizeString;
+    (global as any).T.localizer = this;
     if (handlebars != null) {
       return handlebars.registerHelper("T", this.localizePlainString)
     }
