@@ -24,6 +24,9 @@ export interface LocalizerData {
 
 /** Localizer which has a lookup of translations */
 export class Localizer {
+  /** Current locale */
+  locale: string
+
   /** Locale defaults to "en" */
   constructor(data: LocalizerData, locale?: string)
 
