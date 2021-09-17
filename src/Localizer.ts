@@ -1,13 +1,10 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-// Localizer is a function that sets up global variable "T" which is
-// used to translate strings. Also sets up Handlebars helper with same name
-// Function "T" maps to Localizer "localizeString" function
-// Helper "T" maps to Localizer "localizeString" function
-
-let Localizer
-
-export default Localizer = class Localizer {
+/**
+ * Localizer is a function that sets up global variable "T" which is
+ * used to translate strings. Also sets up Handlebars helper with same name
+ * Function "T" maps to Localizer "localizeString" function
+ * Helper "T" maps to Localizer "localizeString" function
+ */
+export default class Localizer {
   constructor(data: any, locale = "en") {
     this.T = this.T.bind(this)
     this.data = data
