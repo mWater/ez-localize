@@ -1,5 +1,7 @@
+// TODO: This file was created by bulk-decaffeinate.
+// Sanity-check the conversion and remove this comment.
 import fs from 'fs';
-import stringExtractor from './stringExtractor';
+import * as stringExtractor from './stringExtractor';
 
 // rootDirs: directories to extract from. Can also include simple files
 // dataFile: e.g. "localizations.json"

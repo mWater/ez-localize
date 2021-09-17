@@ -1,3 +1,5 @@
+// TODO: This file was created by bulk-decaffeinate.
+// Sanity-check the conversion and remove this comment.
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
@@ -80,7 +82,7 @@ export function findInCoffee(cs) {
   return exports.findInJs(js);
 }
 
-var findInHbsProgramNode = function(node) {
+function findInHbsProgramNode(node) {
   let items = [];
 
   for (let stat of node.statements) {
@@ -97,7 +99,7 @@ var findInHbsProgramNode = function(node) {
     }
   }
   return items;
-};
+}
 
 export function findInHbs(hbs) {
   const items = [];

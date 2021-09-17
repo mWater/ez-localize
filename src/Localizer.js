@@ -1,3 +1,5 @@
+// TODO: This file was created by bulk-decaffeinate.
+// Sanity-check the conversion and remove this comment.
 // Localizer is a function that sets up global variable "T" which is 
 // used to translate strings. Also sets up Handlebars helper with same name
 // Function "T" maps to Localizer "localizeString" function
@@ -8,9 +10,6 @@ let Localizer;
 export default Localizer = class Localizer {
   constructor(data, locale = "en") {
     this.T = this.T.bind(this);
-    this.localizeString = this.localizeString.bind(this);
-    this.localizePlainString = this.localizePlainString.bind(this);
-    this.isLocalized = this.isLocalized.bind(this);
     this.data = data;
     this.locale = locale;
 
@@ -35,7 +34,7 @@ export default Localizer = class Localizer {
     return this.localizeString.apply(this, arguments);
   }
 
-  localizeString(str, ...args) {
+  localizeString = (str, ...args) => {
     // Null is just pass-through
     if ((str == null)) {
       return str;
@@ -76,10 +75,10 @@ export default Localizer = class Localizer {
       
       return output;
     }
-  }
+  };
 
   // Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
-  localizePlainString(str, ...args) {
+  localizePlainString = (str, ...args) => {
     // Find string, falling back to English
     let locstr;
     const item = this.englishMap[str];
@@ -94,12 +93,12 @@ export default Localizer = class Localizer {
       locstr = locstr.replace("{" + i + "}", args[i]);
     }
     return locstr;
-  }
+  };
 
   // Determines if a string is localized
-  isLocalized(str) {
+  isLocalized = str => {
     return str && this.englishMap[str] && this.englishMap[str][this.locale];
-  }
+  };
 
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none

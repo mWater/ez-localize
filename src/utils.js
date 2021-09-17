@@ -1,3 +1,5 @@
+// TODO: This file was created by bulk-decaffeinate.
+// Sanity-check the conversion and remove this comment.
 import _ from 'lodash';
 import xlsx from 'xlsx';
 
@@ -102,11 +104,11 @@ export function updateLocalizedStrings(strs, updates) {
 export function exportXlsx(locales, strs) {
   let locale;
   const wb = { SheetNames: [], Sheets: {} };
-  
+
   const range = {s: {c:10000000, r:10000000}, e: {c:0, r:0 }};
   const ws = {};
-  
-  const addCell = function(row, column, value) {
+
+  function addCell(row, column, value) {
     
     // Update ranges
     if (range.s.r > row) { range.s.r = row; }
@@ -118,11 +120,11 @@ export function exportXlsx(locales, strs) {
     const cell = { v: value, t: 's' };
     const cell_ref = xlsx.utils.encode_cell({c:column,r:row});
     return ws[cell_ref] = cell;
-  };
-    
+  }
+
   let localeCount = 0;
   addCell(0, localeCount++, "Original Language");
-  
+
   if (!_.findWhere(locales, { code: "en"})) {
     locales = locales.concat([{ code: "en", name: "English"}]);
   }
@@ -154,16 +156,16 @@ export function exportXlsx(locales, strs) {
       addCell(rows, columns++, str[locale.code] || "");
     }
   }
-      
+
   // Encode range
   if (range.s.c < 10000000) {
     ws['!ref'] = xlsx.utils.encode_range(range);
   }
-  
+
   // Add worksheet to workbook */
   wb.SheetNames.push("Translation");
   wb.Sheets["Translation"] = ws;
-  
+
   const wbout = xlsx.write(wb, {bookType:'xlsx', bookSST:true, type: 'base64'});
   return wbout;
 }
