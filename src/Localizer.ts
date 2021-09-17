@@ -1,112 +1,112 @@
 // TODO: This file was created by bulk-decaffeinate.
 // Sanity-check the conversion and remove this comment.
-// Localizer is a function that sets up global variable "T" which is 
+// Localizer is a function that sets up global variable "T" which is
 // used to translate strings. Also sets up Handlebars helper with same name
 // Function "T" maps to Localizer "localizeString" function
 // Helper "T" maps to Localizer "localizeString" function
 
-let Localizer;
+let Localizer
 
 export default Localizer = class Localizer {
   constructor(data, locale = "en") {
-    this.T = this.T.bind(this);
-    this.data = data;
-    this.locale = locale;
+    this.T = this.T.bind(this)
+    this.data = data
+    this.locale = locale
 
     // Index strings by English if data present
-    this.englishMap = {};
+    this.englishMap = {}
     if (data != null) {
       for (let str of this.data.strings) {
-        this.englishMap[str.en] = str;
+        this.englishMap[str.en] = str
       }
     }
   }
 
   setLocale(code) {
-    return this.locale = code;
+    return (this.locale = code)
   }
 
   getLocales() {
-    return this.data.locales;
+    return this.data.locales
   }
 
   T(str, ...args) {
-    return this.localizeString.apply(this, arguments);
+    return this.localizeString.apply(this, arguments)
   }
 
   localizeString = (str, ...args) => {
     // Null is just pass-through
-    if ((str == null)) {
-      return str;
+    if (str == null) {
+      return str
     }
-      
+
     // True if object passed in as arg (react style)
-    let hasObject = false;
+    let hasObject = false
 
     for (let arg of args) {
-      if (arg && (typeof(arg) === "object")) {
-        hasObject = true;
+      if (arg && typeof arg === "object") {
+        hasObject = true
       }
     }
 
     if (!hasObject) {
-      return this.localizePlainString(str, ...args);
+      return this.localizePlainString(str, ...args)
     } else {
       // Find string, falling back to English
-      let locstr;
-      const item = this.englishMap[str];
+      let locstr
+      const item = this.englishMap[str]
       if (item && item[this.locale]) {
-        locstr = item[this.locale];
-      } else { 
-        locstr = str;
+        locstr = item[this.locale]
+      } else {
+        locstr = str
       }
 
       // Split and do react-style replacement where string is made into array
-      const parts = locstr.split(/(\{\d+\})/);
+      const parts = locstr.split(/(\{\d+\})/)
 
-      const output = [];
+      const output = []
       for (let part of parts) {
         if (part.match(/^\{\d+\}$/)) {
-          output.push(args[parseInt(part.substr(1, part.length - 2))]);
+          output.push(args[parseInt(part.substr(1, part.length - 2))])
         } else {
-          output.push(part);
+          output.push(part)
         }
       }
-      
-      return output;
+
+      return output
     }
-  };
+  }
 
   // Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
   localizePlainString = (str, ...args) => {
     // Find string, falling back to English
-    let locstr;
-    const item = this.englishMap[str];
+    let locstr
+    const item = this.englishMap[str]
     if (item && item[this.locale]) {
-      locstr = item[this.locale];
-    } else { 
-      locstr = str;
+      locstr = item[this.locale]
+    } else {
+      locstr = str
     }
 
     // Fill in arguments
     for (let i = 0, end = args.length, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
-      locstr = locstr.replace("{" + i + "}", args[i]);
+      locstr = locstr.replace("{" + i + "}", args[i])
     }
-    return locstr;
-  };
+    return locstr
+  }
 
   // Determines if a string is localized
-  isLocalized = str => {
-    return str && this.englishMap[str] && this.englishMap[str][this.locale];
-  };
+  isLocalized = (str) => {
+    return str && this.englishMap[str] && this.englishMap[str][this.locale]
+  }
 
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none
   makeGlobal(handlebars) {
-    global.T = this.localizeString;
-    global.T.localizer = this;
+    global.T = this.localizeString
+    global.T.localizer = this
     if (handlebars != null) {
-      return handlebars.registerHelper('T', this.localizePlainString);
+      return handlebars.registerHelper("T", this.localizePlainString)
     }
   }
-};
+}

@@ -5,12 +5,12 @@
       "name": "English"
     },
     {
-        "code": "fr",
-        "name": "French"
+      "code": "fr",
+      "name": "French"
     },
     {
-        "code": "es",
-        "name": "Spanish"
+      "code": "es",
+      "name": "Spanish"
     }
   ],
   "strings": [

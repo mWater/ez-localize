@@ -1,4 +1,4 @@
-/** 
+/**
  * Export file to XLSX
  * @param oldDataFile e.g. "localizations.json"
  * @param xlsxFile path of file to export
