@@ -12,8 +12,8 @@ import typescript from "typescript"
 
 // rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 // callback is called with list of strings
-export function findFromRootDirs(rootDirs, callback) {
-  let strings = []
+export function findFromRootDirs(rootDirs: any, callback: any) {
+  let strings: any = []
 
   for (let rootDir of rootDirs) {
     var filenames
@@ -62,10 +62,10 @@ export function findFromRootDirs(rootDirs, callback) {
   return callback(strings)
 }
 
-export function findInJs(js) {
-  const items = []
+export function findInJs(this: any, js: any) {
+  const items: any = []
   walk.simple(acorn.parse(js), {
-    CallExpression: function (node) {
+    CallExpression: function (node: any) {
       if (node.callee?.name === "T" && typeof node.arguments[0]?.value === "string") {
         return items.push(node.arguments[0]?.value)
       } else if (node.callee?.property?.name === "T" && typeof node.arguments[0]?.value === "string") {
@@ -76,13 +76,13 @@ export function findInJs(js) {
   return items
 }
 
-export function findInCoffee(cs) {
+export function findInCoffee(cs: any) {
   // Compile coffeescript
   const js = coffee.compile(cs)
   return exports.findInJs(js)
 }
 
-function findInHbsProgramNode(node) {
+function findInHbsProgramNode(node: any) {
   let items = []
 
   for (let stat of node.statements) {
@@ -101,21 +101,21 @@ function findInHbsProgramNode(node) {
   return items
 }
 
-export function findInHbs(hbs) {
+export function findInHbs(hbs: any) {
   const items = []
 
   const tree = handlebars.parse(hbs)
   return findInHbsProgramNode(tree)
 }
 
-export function findInTs(ts) {
+export function findInTs(ts: any) {
   const js = typescript.transpileModule(ts, {
     compilerOptions: { module: typescript.ModuleKind.CommonJS }
   })
   return exports.findInJs(js.outputText)
 }
 
-export function findInTsx(tsx) {
+export function findInTsx(tsx: any) {
   const js = typescript.transpileModule(tsx, {
     compilerOptions: {
       module: typescript.ModuleKind.CommonJS,

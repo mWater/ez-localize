@@ -135,7 +135,7 @@ class Chip extends React.Component<any, any> {
 
   return describe("findFromRoot", () =>
     it("finds in coffee and hbs", (done) =>
-      stringExtractor.findFromRootDirs([__dirname + "/requireSample"], (strings) => {
+      stringExtractor.findFromRootDirs([__dirname + "/requireSample"], (strings: any) => {
         assert.deepEqual(strings.sort(), ["a", "b", "c", "d"])
         return done()
       })))
