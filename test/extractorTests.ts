@@ -1,15 +1,12 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import { assert } from "chai"
-import extractor from "../src/extractor"
-import coffeeify from "coffeeify"
-import hbsfy from "hbsfy"
-import _ from "underscore"
+import * as extractor from "../src/extractor"
+import _ from "lodash"
+import { LocalizerData } from "../src"
 
 describe("updateLocalizations", function () {
   this.timeout(20000)
   it("creates localizations", function (done) {
-    const data = {}
+    const data: LocalizerData = {} as any
     return extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
       assert.deepEqual(data.locales, [{ code: "en", name: "English" }])
       assert.deepEqual(_.sortBy(data.strings, "en"), [

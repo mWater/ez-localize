@@ -2,7 +2,7 @@
   "name": "ez-localize",
   "version": "2.2.1",
   "description": "Super-simple localization of strings in a Node/Browserify application",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/build-library/test-cli",
     "test-browser": "node_modules/build-library/test-browser",
@@ -33,6 +33,8 @@
   },
   "homepage": "https://github.com/mWater/ez-localize",
   "devDependencies": {
+    "@types/chai": "^4.2.21",
+    "@types/lodash": "^3.10.4",
     "build-library": "github:mWater/build-library",
     "chai": "~1.9.0",
     "gulp": "^4.0.0",
