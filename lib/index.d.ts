@@ -1,3 +1,4 @@
+import Localizer from './Localizer';
 /** Localizes strings. Must be called as T("some string") or someThing.T("some string") */
 export declare type LocalizeString = (str: string, ...args: any[]) => string;
 /** A single localized string */
@@ -20,3 +21,8 @@ export interface LocalizerData {
 export { default as Localizer } from './Localizer';
 /** Create a default T that does nothing */
 export declare const defaultT: any;
+declare const _default: {
+    Localizer: typeof Localizer;
+    defaultT: any;
+};
+export default _default;

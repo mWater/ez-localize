@@ -1,3 +1,5 @@
+import Localizer from './Localizer'
+
 /** Localizes strings. Must be called as T("some string") or someThing.T("some string") */
 export type LocalizeString = (str: string, ...args: any[]) => string
 
@@ -29,3 +31,6 @@ var defaultLocalizer = new exports.Localizer()
 
 /** Create a default T that does nothing */
 export const defaultT = defaultLocalizer.T
+
+// Support for non-ES6
+export default { Localizer, defaultT } 
