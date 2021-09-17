@@ -71,7 +71,12 @@ export function changeBaseLocale(strs: LocalizedString[], fromLocale: string, to
 /** Update a set of strings based on newly localized ones */
 export function updateLocalizedStrings(strs: LocalizedString[], updates: LocalizedString[]): void {
   // Regularize CR/LF and trim
-  const regularize = (str: any) => str.replace(/\r/g, "").trim()
+  const regularize = (str: any) => {
+    if (!str) {
+      return str
+    }
+    str.replace(/\r/g, "").trim()
+  }
 
   // Map updates by key
   const updateMap = {}
