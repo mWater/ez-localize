@@ -1,19 +1,6 @@
 import Localizer from './Localizer';
-/** Localizes strings. Must be called as T("some string") or someThing.T("some string") */
-export declare type LocalizeString = (str: string, ...args: any[]) => string;
-/** A single localized string */
-export interface LocalizedString {
-    /** e.g. "en" */
-    _base: string;
-    /** Localizations in each language */
-    [language: string]: string;
-}
-export interface Locale {
-    /** ISO code for locale (e.g. "en") */
-    code: string;
-    /** Local name for locale (e.g. Espanol) */
-    name: string;
-}
+import { LocalizedString, Locale } from './utils';
+export { LocalizedString, Locale };
 export interface LocalizerData {
     locales: Locale[];
     strings: LocalizedString[];

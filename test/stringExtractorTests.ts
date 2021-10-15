@@ -1,9 +1,5 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import { assert } from "chai"
 import * as stringExtractor from "../src/extractor/stringExtractor"
-import coffeeify from "coffeeify"
-import hbsfy from "hbsfy"
 
 describe("stringExtractor", function () {
   this.timeout(20000)
@@ -44,25 +40,6 @@ var func = function() {
 }\
 `
       return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", "test3"])
-    })
-  })
-
-  describe("findInCoffee", function () {
-    it("finds strings", function () {
-      const code = `\
-$ ->
-  x = 5
-  console.log T("test1")
-  console.log T('test2')
-  console.log T('test"quote')
-  console.log T("test\\"quote2")\
-`
-      return assert.deepEqual(stringExtractor.findInCoffee(code), ["test1", "test2", 'test"quote', 'test"quote2'])
-    })
-
-    return it("finds multiline strings", function () {
-      const code = "x = T('''somestring\nanotherline''')"
-      return assert.deepEqual(stringExtractor.findInCoffee(code), ["somestring\nanotherline"])
     })
   })
 

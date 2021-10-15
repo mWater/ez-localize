@@ -1,8 +1,7 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import _ from "lodash"
 import { assert } from "chai"
 import * as utils from "../src/utils"
+import { LocalizedString } from "../src/utils"
 
 describe("Localizer", function () {
   describe("extractLocalizedStrings", function () {
@@ -51,7 +50,7 @@ describe("Localizer", function () {
 
   describe("dedupLocalizedStrings", () =>
     it("removes duplicates by base + string", function () {
-      const strs = [
+      const strs: LocalizedString[] = [
         { _base: "en", en: "hello", es: "esp1" },
         { _base: "es", en: "hello", es: "hello" }, // Different base language
         { _base: "en", en: "hello2" },
@@ -71,7 +70,7 @@ describe("Localizer", function () {
 
   describe("changeBaseLocale", () =>
     it("changes base, preserving other strings but overwriting with base", function () {
-      const strs = [
+      const strs: LocalizedString[] = [
         { _base: "en", en: "hello", es: "esp1" },
         { _base: "en", en: "hello", fr: "fr1", es: "esp1" },
         { _base: "es", en: "hello", fr: "fr1", es: "esp1" },
@@ -224,9 +223,9 @@ describe("Localizer", function () {
     })
 
     it("removes empty strings", function () {
-      const strs = [{ _base: "en", en: "other", es: "otra" }]
+      const strs: LocalizedString[] = [{ _base: "en", en: "other", es: "otra" }]
 
-      const updates = [
+      const updates: LocalizedString[] = [
         { _base: "en", en: "other", es: "" } // Should remove es
       ]
 

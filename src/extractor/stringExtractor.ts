@@ -1,14 +1,10 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import fs from "fs"
 import glob from "glob"
 import path from "path"
-import coffee from "coffeescript"
 import handlebars from "handlebars"
 import * as acorn from "acorn"
 import * as walk from "acorn-walk"
 import typescript from "typescript"
-import { LocalizedString } from ".."
 
 // rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 // callback is called with list of strings
@@ -18,7 +14,7 @@ export function findFromRootDirs(rootDirs: any, callback: any) {
   for (let rootDir of rootDirs) {
     var filenames
     if (fs.lstatSync(rootDir).isDirectory()) {
-      filenames = glob.sync("**/*.@(js|coffee|tsx|ts|hbs)", { cwd: rootDir })
+      filenames = glob.sync("**/*.@(js|tsx|ts|hbs)", { cwd: rootDir })
     } else {
       filenames = ["."]
     }
@@ -40,9 +36,6 @@ export function findFromRootDirs(rootDirs: any, callback: any) {
 
       const ext = path.extname(fullFilename)
       switch (ext) {
-        case ".coffee":
-          strings = strings.concat(exports.findInCoffee(contents))
-          break
         case ".js":
           strings = strings.concat(exports.findInJs(contents))
           break
@@ -76,13 +69,7 @@ export function findInJs(this: any, js: any) {
   return items
 }
 
-export function findInCoffee(cs: any): LocalizedString[] {
-  // Compile coffeescript
-  const js = coffee.compile(cs)
-  return exports.findInJs(js)
-}
-
-function findInHbsProgramNode(node: any): LocalizedString[] {
+function findInHbsProgramNode(node: any): string[] {
   let items = []
 
   for (let stat of node.statements) {

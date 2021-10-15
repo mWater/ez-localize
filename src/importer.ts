@@ -1,14 +1,15 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import fs from "fs"
 import _ from "lodash"
 import { importXlsx } from "./utils"
 import { updateLocalizedStrings } from "./utils"
 
-// oldDataFile: e.g. "localizations.json"
-// xlsxFile: path of file to export
-// newDataFile: can be the same as oldDataFile (different when testing)
-export default function (oldDataFile: any, xlsxFile: any, newDataFile: any) {
+/**
+ * Export file to XLSX
+ * @param oldDataFile e.g. "localizations.json"
+ * @param xlsxFile path of file to export
+ * @param newDataFile can be the same as oldDataFile (different when testing)
+ */
+ export default function importLocalizationFileFromXlsx(oldDataFile: string, xlsxFile: string, newDataFile: string): void {
   // Read the xlsx file and get the locales
   const base64File = fs.readFileSync(xlsxFile, "base64")
 

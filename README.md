@@ -59,10 +59,10 @@ console.log(T("This works {0}%!", { x: 10 });
 will create array of ["This works ", { x: 10 }, "%!"]
 
 
-It handles Coffeescript and Handlebars too:
+It handles Handlebars too:
 
 ```
-var options = { extensions: ['.js', '.coffee'], transform: [coffeeify, hbsfy] };
+var options = { extensions: ['.js'], transform: [hbsfy] };
 extractor.updateLocalizationsupdateLocalizationFile("index.js", "localizations.json", options, function() { console.log("done!")})
 ```
 

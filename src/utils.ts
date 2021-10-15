@@ -1,6 +1,18 @@
 import _ from "lodash"
 import xlsx from "xlsx"
-import { Locale, LocalizedString } from "."
+
+export interface LocalizedString {
+  _base: string
+  [language: string]: string // Localizations
+}
+
+export interface Locale {
+  /** ISO code for locale (e.g. "en") */
+  code: string
+
+  /** Local name for locale (e.g. Espanol) */
+  name: string
+}
 
 /** Extracts localized strings from a plain object */
 export function extractLocalizedStrings(obj: any): LocalizedString[] {
@@ -75,7 +87,7 @@ export function updateLocalizedStrings(strs: LocalizedString[], updates: Localiz
     if (!str) {
       return str
     }
-    str.replace(/\r/g, "").trim()
+    return str.replace(/\r/g, "").trim()
   }
 
   // Map updates by key

@@ -1,13 +1,21 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import fs from "fs"
+import { LocalizerData } from ".."
 import * as stringExtractor from "./stringExtractor"
 
-// rootDirs: directories to extract from. Can also include simple files
-// dataFile: e.g. "localizations.json"
-// options:
-//  plus: extraStrings which includes extra strings that are not in the root file
-export function updateLocalizationFile(rootDirs: any, dataFile: any, options: any, callback: any) {
+/**
+ * Updates a localization file on disk
+ * rootDirs: directories to extract from. Can also include simple files
+ * dataFile: e.g. "localizations.json"
+ * options:
+ *   extraStrings: include extra strings that are not in the root file
+ * @param callback Called when complete
+ */
+ export function updateLocalizationFile(
+  rootDirs: string[],
+  dataFile: string,
+  options: { extraStrings?: string[] },
+  callback: () => void
+): void {
   // Read in data file
   let localizations: any
   if (fs.existsSync(dataFile)) {
@@ -23,7 +31,20 @@ export function updateLocalizationFile(rootDirs: any, dataFile: any, options: an
   })
 }
 
-export function updateLocalizations(rootDirs: any, data: any, options: any, callback: any) {
+/**
+ * Updates localization data in place
+ * rootDirs: directories to extract from. Can also include simple files
+ * dataFile: e.g. "localizations.json"
+ * options:
+ *   extraStrings: include extra strings that are not in the root file
+ * @param callback Called when complete
+ */
+ export function updateLocalizations(
+  rootDirs: string[],
+  data: LocalizerData,
+  options: { extraStrings?: string[] },
+  callback: () => void
+): void {
   if (!data.locales) {
     data.locales = [{ code: "en", name: "English" }]
   }
@@ -79,7 +100,7 @@ export function updateLocalizations(rootDirs: any, data: any, options: any, call
 
     for (let item of data.strings) {
       if (!known[item.en]) {
-        item._unused = true
+        (item as any)._unused = true
       } else {
         delete item._unused
       }
