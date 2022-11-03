@@ -6,6 +6,9 @@ export { LocalizedString, Locale }
 export interface LocalizerData {
   locales: Locale[]
   strings: LocalizedString[]
+
+  /** Base strings that are unused. They are still included in strings  */
+  unused?: string[]
 }
 
 export { default as Localizer } from './Localizer'

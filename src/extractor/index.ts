@@ -25,9 +25,9 @@ import * as stringExtractor from "./stringExtractor"
   }
 
   // Update localizations
-  return exports.updateLocalizations(rootDirs, localizations, options, function () {
+  updateLocalizations(rootDirs, localizations, options, function () {
     fs.writeFileSync(dataFile, JSON.stringify(localizations, null, 2), "utf-8")
-    return callback()
+    callback()
   })
 }
 
@@ -53,24 +53,23 @@ import * as stringExtractor from "./stringExtractor"
   }
 
   // Get strings
-  return stringExtractor.findFromRootDirs(rootDirs, function (strs: any) {
+  stringExtractor.findFromRootDirs(rootDirs, function (strs: string[]) {
     // Add extra strings
-    let loc, str
     if (options.extraStrings) {
       strs = strs.concat(options.extraStrings)
     }
 
     // Create map of english
     const map = {}
-    for (loc of data.strings) {
+    for (const loc of data.strings) {
       map[loc.en] = loc
     }
 
-    for (str of strs) {
+    for (const str of strs) {
       // Create item if doesn't exist
       if (!map[str]) {
         const string = { _base: "en", en: str }
-        for (loc of data.locales) {
+        for (const loc of data.locales) {
           if (loc.code !== "en") {
             string[loc.code] = ""
           }
@@ -84,7 +83,7 @@ import * as stringExtractor from "./stringExtractor"
         }
 
         // Just add missing languages
-        for (loc of data.locales) {
+        for (const loc of data.locales) {
           if (loc.code !== "en" && map[str][loc.code] == null) {
             map[str][loc.code] = ""
           }
@@ -92,20 +91,20 @@ import * as stringExtractor from "./stringExtractor"
       }
     }
 
-    // Mark unused
+    // Gather unused
     const known = {}
-    for (str of strs) {
+    for (const str of strs) {
       known[str] = true
     }
 
+    const unused: string[] = []
     for (let item of data.strings) {
       if (!known[item.en]) {
-        (item as any)._unused = true
-      } else {
-        delete item._unused
+        unused.push(item.en)
       }
     }
+    data.unused = unused
 
-    return callback()
+    callback()
   })
 }

@@ -8,8 +8,8 @@ import typescript from "typescript"
 
 // rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 // callback is called with list of strings
-export function findFromRootDirs(rootDirs: any, callback: any) {
-  let strings: any = []
+export function findFromRootDirs(rootDirs: string[], callback: (strs: string[]) => void) {
+  let strings: string[] = []
 
   for (let rootDir of rootDirs) {
     var filenames
@@ -37,27 +37,27 @@ export function findFromRootDirs(rootDirs: any, callback: any) {
       const ext = path.extname(fullFilename)
       switch (ext) {
         case ".js":
-          strings = strings.concat(exports.findInJs(contents))
+          strings = strings.concat(findInJs(contents))
           break
         case ".hbs":
-          strings = strings.concat(exports.findInHbs(contents))
+          strings = strings.concat(findInHbs(contents))
           break
         case ".ts":
-          strings = strings.concat(exports.findInTs(contents))
+          strings = strings.concat(findInTs(contents))
           break
         case ".tsx":
-          strings = strings.concat(exports.findInTsx(contents))
+          strings = strings.concat(findInTsx(contents))
           break
       }
     }
   }
 
-  return callback(strings)
+  callback(strings)
 }
 
 export function findInJs(this: any, js: any) {
   const items: any = []
-  walk.simple(acorn.parse(js), {
+  walk.simple(acorn.parse(js, { ecmaVersion: "latest" }), {
     CallExpression: function (node: any) {
       if (node.callee?.name === "T" && typeof node.arguments[0]?.value === "string") {
         return items.push(node.arguments[0]?.value)
@@ -69,45 +69,49 @@ export function findInJs(this: any, js: any) {
   return items
 }
 
-function findInHbsProgramNode(node: any): string[] {
-  let items = []
+function findInHbsProgramNode(node: hbs.AST.Program): string[] {
+  let items: string[] = []
 
-  for (let stat of node.statements) {
-    if (stat.type === "mustache" && stat.id.string === "T") {
-      items.push(stat.params[0].string)
-    }
-    if (stat.type === "block") {
-      if (stat.program) {
-        items = items.concat(findInHbsProgramNode(stat.program))
+  for (let stat of node.body) {
+    if (stat.type === "MustacheStatement") {
+      const mushStat = stat as hbs.AST.MustacheStatement
+      if (mushStat.path.type == "PathExpression" && (mushStat.path as hbs.AST.PathExpression).original == "T") {
+        items.push((mushStat.params[0] as hbs.AST.StringLiteral).value)
       }
-      if (stat.inverse) {
-        items = items.concat(findInHbsProgramNode(stat.inverse))
+    }
+    if (stat.type === "BlockStatement") {
+      const blockStat = stat as hbs.AST.BlockStatement
+      if (blockStat.program) {
+        items = items.concat(findInHbsProgramNode(blockStat.program))
+      }
+      if (blockStat.inverse) {
+        items = items.concat(findInHbsProgramNode(blockStat.inverse))
       }
     }
   }
   return items
 }
 
-export function findInHbs(hbs: any) {
+export function findInHbs(hbs: string) {
   const items = []
 
   const tree = handlebars.parse(hbs)
   return findInHbsProgramNode(tree)
 }
 
-export function findInTs(ts: any) {
+export function findInTs(ts: string) {
   const js = typescript.transpileModule(ts, {
     compilerOptions: { module: typescript.ModuleKind.CommonJS }
   })
-  return exports.findInJs(js.outputText)
+  return findInJs(js.outputText)
 }
 
-export function findInTsx(tsx: any) {
+export function findInTsx(tsx: string) {
   const js = typescript.transpileModule(tsx, {
     compilerOptions: {
       module: typescript.ModuleKind.CommonJS,
       jsx: typescript.JsxEmit.ReactJSX
     }
   })
-  return exports.findInJs(js.outputText)
+  return findInJs(js.outputText)
 }

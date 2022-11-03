@@ -5,6 +5,7 @@ import { LocalizerData } from "../src"
 
 describe("updateLocalizations", function () {
   this.timeout(20000)
+
   it("creates localizations", function (done) {
     const data: LocalizerData = {} as any
     return extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
@@ -15,7 +16,7 @@ describe("updateLocalizations", function () {
         { _base: "en", en: "c" },
         { _base: "en", en: "d" }
       ])
-      return done()
+      done()
     })
   })
 
@@ -38,40 +39,43 @@ describe("updateLocalizations", function () {
         { _base: "en", en: "c", es: "" },
         { _base: "en", en: "d", es: "" }
       ])
-      return done()
+      done()
     })
   })
 
   it("marks unused", function (done) {
-    const data = {
+    const data: LocalizerData = {
       locales: [{ code: "en", name: "English" }],
       strings: [{ _base: "en", en: "x" }]
     }
-    return extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
+    extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
       assert.deepEqual(_.sortBy(data.strings, "en"), [
         { _base: "en", en: "a" },
         { _base: "en", en: "b" },
         { _base: "en", en: "c" },
         { _base: "en", en: "d" },
-        { _base: "en", en: "x", _unused: true }
+        { _base: "en", en: "x" }
       ])
-      return done()
+      assert.deepEqual(data.unused, ["x"])
+      done()
     })
   })
 
-  return it("removes unused", function (done) {
+  it("removes unused", function (done) {
     const data = {
       locales: [{ code: "en", name: "English" }],
-      strings: [{ _base: "en", en: "b", _unused: true }]
+      strings: [{ _base: "en", en: "b" }],
+      unused: ["b"]
     }
-    return extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
+    extractor.updateLocalizations([__dirname + "/requireSample"], data, {}, function () {
       assert.deepEqual(_.sortBy(data.strings, "en"), [
         { _base: "en", en: "a" },
         { _base: "en", en: "b" },
         { _base: "en", en: "c" },
         { _base: "en", en: "d" }
       ])
-      return done()
+      assert.deepEqual(data.unused, [])
+      done()
     })
   })
 })
