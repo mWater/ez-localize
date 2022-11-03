@@ -18,8 +18,17 @@ export default class Localizer {
     /** Set the current locale */
     setLocale(locale: string): void;
     getLocales(): Locale[];
-    localizeString: (str: string | null | undefined, ...args: any[]) => any;
-    localizePlainString: (str: any, ...args: any[]) => any;
+    /**
+     * Localize a single string of the form "some text {0} more text {1} etc", replacing the
+     * parts with the arguments.
+     *
+     * Can also replace where the first parameter is an array for ES6 tagged templates
+     */
+    localizeString: (str: string[] | string | null | undefined, ...args: any[]) => string | any[] | null | undefined;
+    /**
+     * Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
+     */
+    localizePlainString: (str: any, ...args: any[]) => string;
     /** Determines if a string is localized */
     isLocalized(str: string): boolean;
     makeGlobal(handlebars: any): void;

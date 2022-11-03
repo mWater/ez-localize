@@ -18,6 +18,12 @@ With:
 console.log(T("Hello world!"));
 ```
 
+Or use ES6 tagged templates:
+
+```
+console.log(T`Hello world!')
+```
+
 ### Step 2: Extract strings from your application
 
 ```
@@ -49,6 +55,12 @@ String substitution:
 ```
 console.log(T("This works {0}%!", 100);
 ```
+
+
+```
+console.log(T`This works ${100}%!`);
+```
+
 
 React-style substitution:
 

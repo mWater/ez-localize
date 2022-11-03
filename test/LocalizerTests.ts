@@ -1,5 +1,3 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
 import { assert } from "chai"
 import Localizer from "../src/Localizer"
 
@@ -16,27 +14,33 @@ describe("Localizer", function () {
         { en: "a {0} b {1} c", es: "x {1} y {0} z" }
       ]
     }
-    return (this.loc = new Localizer(this.data, "es"))
+    this.loc = new Localizer(this.data, "es")
   })
 
   it("localizes string", function () {
-    return assert.equal(this.loc.localizeString("dog"), "perro")
+    assert.equal(this.loc.localizeString("dog"), "perro")
   })
 
   it("falls back to english", function () {
-    return assert.equal(this.loc.localizeString("fish"), "fish")
+    assert.equal(this.loc.localizeString("fish"), "fish")
   })
 
   it("replaces parameters", function () {
-    return assert.equal(this.loc.localizeString("a {0} b {1} c", "1", 2), "x 2 y 1 z")
+    assert.equal(this.loc.localizeString("a {0} b {1} c", "1", 2), "x 2 y 1 z")
+  })
+
+  it("replaces parameters ES6-style", function () {
+    assert.equal(this.loc.T`a ${"1"} b ${2} c`, "x 2 y 1 z")
+    assert.equal(this.loc.T`a`, "a")
+    assert.equal(this.loc.T``, "")
   })
 
   it("T replaces parameters", function () {
-    return assert.equal(this.loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z")
+    assert.equal(this.loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z")
   })
 
-  return describe("react-style localization", () =>
+  describe("react-style localization", () =>
     it("returns array with objects", function () {
-      return assert.deepEqual(this.loc.T("a {0} b {1} c", { x: 1 }, { y: 2 }), ["x ", { y: 2 }, " y ", { x: 1 }, " z"])
+      assert.deepEqual(this.loc.T("a {0} b {1} c", { x: 1 }, { y: 2 }), ["x ", { y: 2 }, " y ", { x: 1 }, " z"])
     }))
 })

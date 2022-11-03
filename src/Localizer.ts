@@ -45,19 +45,30 @@ export default class Localizer {
     return this.data.locales
   }
 
-  localizeString = (str: string | null | undefined, ...args: any[]) => {
+  /** 
+   * Localize a single string of the form "some text {0} more text {1} etc", replacing the 
+   * parts with the arguments.
+   * 
+   * Can also replace where the first parameter is an array for ES6 tagged templates
+   */
+  localizeString = (str: string[] | string | null | undefined, ...args: any[]) => {
     // Null is just pass-through
     if (str == null) {
       return str
     }
 
     // True if object passed in as arg (react style)
-    let hasObject = false
+    let hasObject = args.some(arg => arg && typeof arg === "object")
 
-    for (let arg of args) {
-      if (arg && typeof arg === "object") {
-        hasObject = true
+    // Handle ES6-style
+    if (Array.isArray(str)) {
+      // Change to format of standard localizer string
+      let newStr = str[0]
+      for (let i = 1 ; i < str.length ; i++) {
+        newStr += "{" + (i - 1) + "}"
+        newStr += str[i]
       }
+      str = newStr
     }
 
     if (!hasObject) {
@@ -88,10 +99,13 @@ export default class Localizer {
     }
   }
 
-  // Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
+  /** 
+   * Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
+   */
   localizePlainString = (str: any, ...args: any[]) => {
     // Find string, falling back to English
-    let locstr
+    let locstr: string
+
     const item = this.englishMap[str]
     if (item && item[this.locale]) {
       locstr = item[this.locale]
@@ -100,7 +114,7 @@ export default class Localizer {
     }
 
     // Fill in arguments
-    for (let i = 0, end = args.length, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+    for (let i = 0; i < args.length ; i++) {
       locstr = locstr.replace("{" + i + "}", args[i])
     }
     return locstr
