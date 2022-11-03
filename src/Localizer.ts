@@ -1,4 +1,4 @@
-import { Locale, LocalizedString, LocalizerData } from "."
+import { Locale, LocalizedString, LocalizerData, LocalizeString } from "."
 
 /**
  * Localizer is a function that sets up global variable "T" which is
@@ -14,9 +14,10 @@ export default class Localizer {
 
   englishMap: { [english: string]: LocalizedString }
 
+  T: LocalizeString
+
   /** Locale defaults to "en" */
   constructor(data: LocalizerData, locale?: string) {
-    this.T = this.T.bind(this)
     this.data = data
     this.locale = locale || "en"
 
@@ -27,6 +28,10 @@ export default class Localizer {
         this.englishMap[str.en] = str
       }
     }
+
+    Object.defineProperty(this.localizeString, "locale", { get() { return this.locale }})
+    Object.defineProperty(this.localizeString, "localizer", { get() { return this }})
+    this.T = this.localizeString as LocalizeString
   }
 
   /** Set the current locale */
@@ -38,11 +43,7 @@ export default class Localizer {
     return this.data.locales
   }
 
-  T(str: any, ...args: any[]) {
-    return this.localizeString.apply(this, arguments)
-  }
-
-  localizeString = (str: any, ...args: any[]) => {
+  localizeString = (str: string | null | undefined, ...args: any[]) => {
     // Null is just pass-through
     if (str == null) {
       return str
@@ -111,10 +112,9 @@ export default class Localizer {
   // Makes this localizer global. handlebars is instance to register
   // helper on, null for none
   makeGlobal(handlebars: any) {
-    (global as any).T = this.localizeString;
-    (global as any).T.localizer = this;
+    (global as any).T = this.T;
     if (handlebars != null) {
-      return handlebars.registerHelper("T", this.localizePlainString)
+      handlebars.registerHelper("T", this.localizePlainString)
     }
   }
 }

@@ -8,8 +8,11 @@ export interface LocalizerData {
     unused?: string[];
 }
 export { default as Localizer } from './Localizer';
-/** Function to localize a string */
-export declare type LocalizeString = (str: string, ...args: any[]) => string;
+/** Function to localize a string. Usually exposed as "T" */
+export declare type LocalizeString = ((str: string, ...args: any[]) => string) & ({
+    locale: string;
+    localizer: Localizer;
+});
 /** Create a default T that does nothing */
 export declare const defaultT: LocalizeString;
 declare const _default: {

@@ -1,4 +1,4 @@
-import { Locale, LocalizedString, LocalizerData } from ".";
+import { Locale, LocalizedString, LocalizerData, LocalizeString } from ".";
 /**
  * Localizer is a function that sets up global variable "T" which is
  * used to translate strings. Also sets up Handlebars helper with same name
@@ -12,15 +12,15 @@ export default class Localizer {
     englishMap: {
         [english: string]: LocalizedString;
     };
+    T: LocalizeString;
     /** Locale defaults to "en" */
     constructor(data: LocalizerData, locale?: string);
     /** Set the current locale */
     setLocale(locale: string): void;
     getLocales(): Locale[];
-    T(str: any, ...args: any[]): any;
-    localizeString: (str: any, ...args: any[]) => any;
+    localizeString: (str: string | null | undefined, ...args: any[]) => any;
     localizePlainString: (str: any, ...args: any[]) => any;
     /** Determines if a string is localized */
     isLocalized(str: string): boolean;
-    makeGlobal(handlebars: any): any;
+    makeGlobal(handlebars: any): void;
 }
