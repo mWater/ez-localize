@@ -24,7 +24,7 @@ export default class Localizer {
      *
      * Can also replace where the first parameter is an array for ES6 tagged templates
      */
-    localizeString: (str: string[] | string | null | undefined, ...args: any[]) => string | any[] | null | undefined;
+    localizeString: (str: TemplateStringsArray | string | null | undefined, ...args: any[]) => string | any[] | null | undefined;
     /**
      * Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
      */

@@ -51,7 +51,7 @@ export default class Localizer {
    * 
    * Can also replace where the first parameter is an array for ES6 tagged templates
    */
-  localizeString = (str: string[] | string | null | undefined, ...args: any[]) => {
+  localizeString = (str: TemplateStringsArray | string | null | undefined, ...args: any[]) => {
     // Null is just pass-through
     if (str == null) {
       return str
@@ -76,11 +76,11 @@ export default class Localizer {
     } else {
       // Find string, falling back to English
       let locstr
-      const item = this.englishMap[str]
+      const item = this.englishMap[str as string]
       if (item && item[this.locale]) {
         locstr = item[this.locale]
       } else {
-        locstr = str
+        locstr = str as string
       }
 
       // Split and do react-style replacement where string is made into array
