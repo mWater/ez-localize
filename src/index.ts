@@ -14,7 +14,7 @@ export interface LocalizerData {
 export { default as Localizer } from './Localizer'
 
 /** Function to localize a string. Usually exposed as "T" */
-export type LocalizeString = ((str: string, ...args: any[]) => string) & ({ locale: string, localizer: Localizer })
+export type LocalizeString = ((str: string[] | string | null | undefined, ...args: any[]) => string) & ({ locale: string, localizer: Localizer })
 
 // Create default localizer
 var defaultLocalizer = new Localizer({ locales: [{ code: "en", name: "English" }], strings: [] })
