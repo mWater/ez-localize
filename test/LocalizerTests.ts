@@ -39,6 +39,10 @@ describe("Localizer", function () {
     assert.equal(this.loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z")
   })
 
+  it("T replaces parameters in localized string", function () {
+    assert.equal(this.loc.T({ _base: "en", en: "ax {0} bx {1} c", es: "a {0} b {1} c" }, "1", 2), "x 2 y 1 z")
+  })
+
   describe("react-style localization", () =>
     it("returns array with objects", function () {
       assert.deepEqual(this.loc.T("a {0} b {1} c", { x: 1 }, { y: 2 }), ["x ", { y: 2 }, " y ", { x: 1 }, " z"])

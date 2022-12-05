@@ -51,10 +51,17 @@ export default class Localizer {
    * 
    * Can also replace where the first parameter is an array for ES6 tagged templates
    */
-  localizeString = (str: TemplateStringsArray | string | null | undefined, ...args: any[]) => {
+  localizeString = (str: TemplateStringsArray | LocalizedString | string | null | undefined, ...args: any[]): string | null => {
     // Null is just pass-through
     if (str == null) {
-      return str
+      return str ?? null
+    }
+
+    // Handle localized string
+    if (typeof str === "object" && !Array.isArray(str) && (str as LocalizedString)._base) {
+      // Get localized string
+      const locStr = (str as LocalizedString)[this.locale] || (str as LocalizedString).en
+      return this.localizeString(locStr, ...args)
     }
 
     // True if object passed in as arg (react style)
@@ -95,7 +102,8 @@ export default class Localizer {
         }
       }
 
-      return output
+      console.error("DEPRECATED: Localizer.localizeString called with object argument")
+      return (output as unknown) as string
     }
   }
 
