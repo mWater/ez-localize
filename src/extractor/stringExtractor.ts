@@ -113,7 +113,10 @@ export function findInHbs(hbs: string) {
 
 export function findInTs(ts: string) {
   const js = typescript.transpileModule(ts, {
-    compilerOptions: { module: typescript.ModuleKind.CommonJS }
+    compilerOptions: { 
+      module: typescript.ModuleKind.CommonJS,
+      target: typescript.ScriptTarget.ESNext, 
+    }
   })
   return findInJs(js.outputText)
 }
@@ -122,7 +125,8 @@ export function findInTsx(tsx: string) {
   const js = typescript.transpileModule(tsx, {
     compilerOptions: {
       module: typescript.ModuleKind.CommonJS,
-      jsx: typescript.JsxEmit.ReactJSX
+      jsx: typescript.JsxEmit.ReactJSX,
+      target: typescript.ScriptTarget.ESNext,
     }
   })
   return findInJs(js.outputText)

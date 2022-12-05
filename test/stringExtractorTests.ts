@@ -106,11 +106,12 @@ class Chip extends React.Component<any, any> {
   render() {
     return (
       <div className="chip">{T("SDFSDF")}</div>
+      <div>{T\`ABC\`}</div>
     );
   }
 }\
 `
-      return assert.deepEqual(stringExtractor.findInTsx(code), ["SDFSDF"])
+      return assert.deepEqual(stringExtractor.findInTsx(code), ["SDFSDF", "ABC"])
     })
   })
 
