@@ -12,9 +12,11 @@ var func = function() {
   console.log(T('test2'));
   console.log(T('test"quote'));
   console.log(T("test\\"quote2"));
+  console.log(T\`test3\`);
+  console.log(T\`test4 \${x}\ \${y}\`);
 }\
 `
-      return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2'])
+      return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2', "test3", "test4 {0} {1}"])
     })
 
     it("ignores non-strings", function () {

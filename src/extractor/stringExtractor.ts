@@ -60,11 +60,21 @@ export function findInJs(this: any, js: any) {
   walk.simple(acorn.parse(js, { ecmaVersion: "latest" }), {
     CallExpression: function (node: any) {
       if (node.callee?.name === "T" && typeof node.arguments[0]?.value === "string") {
-        return items.push(node.arguments[0]?.value)
+        items.push(node.arguments[0]?.value)
       } else if (node.callee?.property?.name === "T" && typeof node.arguments[0]?.value === "string") {
-        return items.push(node.arguments[0]?.value)
+        items.push(node.arguments[0]?.value)
       }
-    }.bind(this)
+    },
+    TemplateLiteral: function (node: any) {
+      let str = ""
+      for (let i = 0 ; i < node.quasis.length ; i++) {
+        if (i > 0) {
+          str += `{${i - 1}}`
+        }
+        str += node.quasis[i].value.raw
+      }
+      items.push(str)
+    },
   })
   return items
 }
