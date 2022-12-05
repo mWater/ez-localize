@@ -14,6 +14,8 @@ var func = function() {
   console.log(T("test\\"quote2"));
   console.log(T\`test3\`);
   console.log(T\`test4 \${x}\ \${y}\`);
+  console.log(\`Not this \${x}\ \${y}\`);
+  console.log(S\`Not this \${x}\ \${y}\`);
 }\
 `
       return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2', "test3", "test4 {0} {1}"])

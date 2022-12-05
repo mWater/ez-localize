@@ -65,15 +65,17 @@ export function findInJs(this: any, js: any) {
         items.push(node.arguments[0]?.value)
       }
     },
-    TemplateLiteral: function (node: any) {
-      let str = ""
-      for (let i = 0 ; i < node.quasis.length ; i++) {
-        if (i > 0) {
-          str += `{${i - 1}}`
+    TaggedTemplateExpression: function (node: any) {
+      if (node.tag.type == "Identifier" && node.tag.name == "T") {
+        let str = ""
+        for (let i = 0 ; i < node.quasi.quasis.length ; i++) {
+          if (i > 0) {
+            str += `{${i - 1}}`
+          }
+          str += node.quasi.quasis[i].value.raw
         }
-        str += node.quasis[i].value.raw
+        items.push(str)
       }
-      items.push(str)
     },
   })
   return items
