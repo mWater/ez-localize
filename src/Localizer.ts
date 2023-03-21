@@ -103,6 +103,7 @@ export default class Localizer {
       }
 
       console.error("DEPRECATED: Localizer.localizeString called with object argument")
+      console.trace()
       return (output as unknown) as string
     }
   }
