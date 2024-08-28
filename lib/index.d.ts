@@ -9,7 +9,7 @@ export interface LocalizerData {
 }
 export { default as Localizer } from './Localizer';
 /** Function to localize a string. Usually exposed as "T" */
-export declare type LocalizeString = ((str: TemplateStringsArray | string | null | undefined, ...args: any[]) => string) & ({
+export declare type LocalizeString = ((str: TemplateStringsArray | LocalizedString | string | null | undefined, ...args: any[]) => string) & ({
     locale: string;
     localizer: Localizer;
 });
