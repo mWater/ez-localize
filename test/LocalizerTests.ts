@@ -35,6 +35,11 @@ describe("Localizer", function () {
     assert.equal(this.loc.T``, "")
   })
 
+  it("localizes a request", function () {
+    assert.equal(this.loc.T({ locale: "es", text: "dog" }), "perro")
+    assert.equal(this.loc.T({ locale: "es", text: "a {0} b {1} c", args: ["1", 2] }), "x 2 y 1 z")
+  })
+
   it("T replaces parameters", function () {
     assert.equal(this.loc.T("a {0} b {1} c", "1", 2), "x 2 y 1 z")
   })

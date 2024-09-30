@@ -5,6 +5,7 @@ import handlebars from "handlebars"
 import * as acorn from "acorn"
 import * as walk from "acorn-walk"
 import typescript from "typescript"
+import { LocalizationRequest } from "../Localizer"
 
 // rootDirs are the directories to find files in. node_modules is never entered. Can be files as well, in which case the file is used
 // callback is called with list of strings
@@ -61,8 +62,21 @@ export function findInJs(this: any, js: any) {
     CallExpression: function (node: any) {
       if (node.callee?.name === "T" && typeof node.arguments[0]?.value === "string") {
         items.push(node.arguments[0]?.value)
-      } else if (node.callee?.property?.name === "T" && typeof node.arguments[0]?.value === "string") {
+      } 
+      else if (node.callee?.name === "T" && node.arguments[0]?.type === "ObjectExpression") {
+        const textProperty = node.arguments[0].properties.find((prop: any) => prop.key.name === 'text')
+        if (textProperty && textProperty.value.type === 'Literal') {
+          items.push(textProperty.value.value)
+        }
+      }
+      else if (node.callee?.property?.name === "T" && typeof node.arguments[0]?.value === "string") {
         items.push(node.arguments[0]?.value)
+      } 
+      else if (node.callee?.property?.name === "T" && node.arguments[0]?.type === "ObjectExpression") {
+        const textProperty = node.arguments[0].properties.find((prop: any) => prop.key.name === 'text')
+        if (textProperty && textProperty.value.type === 'Literal') {
+          items.push(textProperty.value.value)
+        }
       }
     },
     TaggedTemplateExpression: function (node: any) {

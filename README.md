@@ -24,6 +24,13 @@ Or use ES6 tagged templates:
 console.log(T`Hello world!')
 ```
 
+Or use localization requests with an explicit locale:
+
+```
+console.log(T({ locale: "fr", text: "dog" }));
+console.log(T({ locale: "fr", text: "{0}'s dog", args: ["Dave"] }));
+```
+
 ### Step 2: Extract strings from your application
 
 ```

@@ -49,12 +49,19 @@ export default class Localizer {
    * Localize a single string of the form "some text {0} more text {1} etc", replacing the 
    * parts with the arguments.
    * 
-   * Can also replace where the first parameter is an array for ES6 tagged templates
+   * Can also replace where the first parameter is an array for ES6 tagged templates.
+   * 
+   * Can also localize to a specified locale with LocalizationRequest.
    */
-  localizeString = (str: TemplateStringsArray | LocalizedString | string | null | undefined, ...args: any[]): string | null => {
+  localizeString = (str: TemplateStringsArray | LocalizedString | LocalizationRequest | string | null | undefined, ...args: any[]): string | null => {
     // Null is just pass-through
     if (str == null) {
       return str ?? null
+    }
+
+    // Handle localization request
+    if (typeof str === "object" && (str as LocalizationRequest).locale) {
+      return this.localizeStringRequest(str as LocalizationRequest)
     }
 
     // Handle localized string
@@ -79,7 +86,7 @@ export default class Localizer {
     }
 
     if (!hasObject) {
-      return this.localizePlainString(str, ...args)
+      return this.localizeStringRequest({ locale: this.locale, text: str as string, args })
     } else {
       // Find string, falling back to English
       let locstr
@@ -112,22 +119,34 @@ export default class Localizer {
    * Localizes a plain string without React-style interpretation. Needed for handlebars as it passes extra arguments
    */
   localizePlainString = (str: any, ...args: any[]) => {
+    return this.localizeStringRequest({ locale: this.locale, text: str, args })
+  }
+
+  /**
+   * Localizes a string based on a localization request.
+   */
+  private localizeStringRequest(request: LocalizationRequest): string | null {
+    const { locale, text, args } = request
+
     // Find string, falling back to English
     let locstr: string
 
-    const item = this.englishMap[str]
-    if (item && item[this.locale]) {
-      locstr = item[this.locale]
+    const item = this.englishMap[text]
+    if (item && item[locale]) {
+      locstr = item[locale]
     } else {
-      locstr = str
+      locstr = text
     }
 
     // Fill in arguments
-    for (let i = 0; i < args.length ; i++) {
-      locstr = locstr.replace("{" + i + "}", args[i])
+    if (args) {
+      for (let i = 0; i < args.length ; i++) {
+        locstr = locstr.replace("{" + i + "}", args[i])
+      }
     }
     return locstr
   }
+
 
   /** Determines if a string is localized */
   isLocalized(str: string): boolean {
@@ -142,4 +161,16 @@ export default class Localizer {
       handlebars.registerHelper("T", this.localizePlainString)
     }
   }
+}
+
+/**
+ * Localization request
+ */
+export interface LocalizationRequest {
+  /** Locale to localize to. e.g. "en" or "fr" */
+  locale: string
+  /** Text to localize in format of "some text {0} more text {1} etc" */
+  text: string
+  /** Arguments to substitute into the localized string */
+  args?: any[]
 }

@@ -14,11 +14,12 @@ var func = function() {
   console.log(T("test\\"quote2"));
   console.log(T\`test3\`);
   console.log(T\`test4 \${x}\ \${y}\`);
+  console.log(T({locale: "es", text: "dog"}));
   console.log(\`Not this \${x}\ \${y}\`);
   console.log(S\`Not this \${x}\ \${y}\`);
 }\
 `
-      return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2', "test3", "test4 {0} {1}"])
+      assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2', "test3", "test4 {0} {1}", "dog"])
     })
 
     it("ignores non-strings", function () {
@@ -30,7 +31,7 @@ var func = function() {
   console.log(T("test"));
 }\
 `
-      return assert.deepEqual(stringExtractor.findInJs(code), ["test"])
+      assert.deepEqual(stringExtractor.findInJs(code), ["test"])
     })
 
     return it("finds T calls on objects", function () {
@@ -41,9 +42,10 @@ var func = function() {
   console.log(ctx.T("test1"));
   console.log(obj.ctx.T("test2"));
   console.log(this.ctx.T("test3"));
+  console.log(ctx.T({locale: "es", text: "dog"}));
 }\
 `
-      return assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", "test3"])
+      assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", "test3", "dog"])
     })
   })
 
@@ -54,7 +56,7 @@ var func = function() {
 T 'not this'
 {{T "another string"}}\
 `
-      return assert.deepEqual(stringExtractor.findInHbs(code), ["some string", "another string"])
+      assert.deepEqual(stringExtractor.findInHbs(code), ["some string", "another string"])
     })
 
     it("finds strings in clauses", function () {
