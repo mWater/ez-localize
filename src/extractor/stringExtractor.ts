@@ -65,7 +65,7 @@ export function findInJs(this: any, js: any) {
       } 
       else if (node.callee?.name === "T" && node.arguments[0]?.type === "ObjectExpression") {
         const textProperty = node.arguments[0].properties.find((prop: any) => prop.key.name === 'text')
-        if (textProperty && textProperty.value.type === 'Literal') {
+        if (textProperty && textProperty.value.type === 'Literal' && typeof textProperty.value.value === "string") {
           items.push(textProperty.value.value)
         }
       }
@@ -74,7 +74,7 @@ export function findInJs(this: any, js: any) {
       } 
       else if (node.callee?.property?.name === "T" && node.arguments[0]?.type === "ObjectExpression") {
         const textProperty = node.arguments[0].properties.find((prop: any) => prop.key.name === 'text')
-        if (textProperty && textProperty.value.type === 'Literal') {
+        if (textProperty && textProperty.value.type === 'Literal' && typeof textProperty.value.value === "string") {
           items.push(textProperty.value.value)
         }
       }

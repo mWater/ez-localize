@@ -17,6 +17,7 @@ var func = function() {
   console.log(T({locale: "es", text: "dog"}));
   console.log(\`Not this \${x}\ \${y}\`);
   console.log(S\`Not this \${x}\ \${y}\`);
+  console.log(T({locale: "en", text: { _base: "en", en: "NOT THIS" }}));
 }\
 `
       assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", 'test"quote', 'test"quote2', "test3", "test4 {0} {1}", "dog"])

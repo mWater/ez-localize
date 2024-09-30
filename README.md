@@ -29,6 +29,7 @@ Or use localization requests with an explicit locale:
 ```
 console.log(T({ locale: "fr", text: "dog" }));
 console.log(T({ locale: "fr", text: "{0}'s dog", args: ["Dave"] }));
+console.log(T({ locale: "fr", text: { _base: "en", en: "cat", fr: "chat" }}));
 ```
 
 ### Step 2: Extract strings from your application

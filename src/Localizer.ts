@@ -126,16 +126,33 @@ export default class Localizer {
    * Localizes a string based on a localization request.
    */
   private localizeStringRequest(request: LocalizationRequest): string | null {
-    const { locale, text, args } = request
+    let { locale, text, args } = request
+
+    if (text == null) {
+      return null
+    }
+
+    let textStr: string
+
+    if (typeof text === "object" && (text as LocalizedString)._base) {
+      // Get localized string
+      const localizedStr = (text as LocalizedString)[locale ?? this.locale] ?? (text as LocalizedString).en
+      if (localizedStr == null) {
+        return null
+      }
+      textStr = localizedStr
+    } else {
+      textStr = text as string
+    }
 
     // Find string, falling back to English
     let locstr: string
 
-    const item = this.englishMap[text]
+    const item = this.englishMap[textStr]
     if (item && item[locale ?? this.locale]) {
       locstr = item[locale ?? this.locale]
     } else {
-      locstr = text
+      locstr = textStr
     }
 
     // Fill in arguments
@@ -170,7 +187,7 @@ export interface LocalizationRequest {
   /** Locale to localize to. e.g. "en" or "fr". Default is current locale. */
   locale?: string
   /** Text to localize in format of "some text {0} more text {1} etc" */
-  text: string
+  text: string | LocalizedString | null | undefined
   /** Arguments to substitute into the localized string */
   args?: any[]
 }

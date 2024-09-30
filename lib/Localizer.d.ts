@@ -46,7 +46,7 @@ export interface LocalizationRequest {
     /** Locale to localize to. e.g. "en" or "fr". Default is current locale. */
     locale?: string;
     /** Text to localize in format of "some text {0} more text {1} etc" */
-    text: string;
+    text: string | LocalizedString | null | undefined;
     /** Arguments to substitute into the localized string */
     args?: any[];
 }
