@@ -1,4 +1,4 @@
-import Localizer from './Localizer';
+import Localizer, { LocalizationRequest } from './Localizer';
 import { LocalizedString, Locale } from './utils';
 export { LocalizedString, Locale };
 export interface LocalizerData {
@@ -9,7 +9,7 @@ export interface LocalizerData {
 }
 export { default as Localizer } from './Localizer';
 /** Function to localize a string. Usually exposed as "T" */
-export declare type LocalizeString = ((str: TemplateStringsArray | LocalizedString | string | null | undefined, ...args: any[]) => string) & ({
+export declare type LocalizeString = ((str: TemplateStringsArray | LocalizedString | LocalizationRequest | string | null | undefined, ...args: any[]) => string) & ({
     locale: string;
     localizer: Localizer;
 });
