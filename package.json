@@ -52,7 +52,7 @@
     "acorn-walk": "^8.2.0",
     "glob": "^8.0.3",
     "handlebars": "^4.7.7",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.21",
     "minimist": "^1.1.1",
     "module-deps": "^6.2.0",
     "through": "^2.3.8",
