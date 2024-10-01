@@ -60,7 +60,7 @@ export default class Localizer {
     }
 
     // Handle localization request
-    if (typeof str === "object" && (str as LocalizationRequest).locale) {
+    if (typeof str === "object" && (str as LocalizationRequest).text) {
       return this.localizeStringRequest(str as LocalizationRequest)
     }
 
