@@ -11,7 +11,9 @@ describe("Localizer", function () {
       strings: [
         { en: "dog", es: "perro" },
         { en: "cat", es: "gato" },
-        { en: "a {0} b {1} c", es: "x {1} y {0} z" }
+        { en: "a {0} b {1} c", es: "x {1} y {0} z" },
+        { en: "open|verb", es: "abrir|verb" },
+        { en: "open|noun", es: "abierto" }
       ]
     }
     this.loc = new Localizer(this.data, "es")
@@ -47,6 +49,11 @@ describe("Localizer", function () {
 
   it("T replaces parameters in localized string", function () {
     assert.equal(this.loc.T({ _base: "en", en: "ax {0} bx {1} c", es: "a {0} b {1} c" }, "1", 2), "x 2 y 1 z")
+  })
+
+  it("strips context", function () {
+    assert.equal(this.loc.T("open|verb"), "abrir")
+    assert.equal(this.loc.T("open|noun"), "abierto")
   })
 
   describe("react-style localization", () =>

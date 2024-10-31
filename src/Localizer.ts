@@ -109,8 +109,6 @@ export default class Localizer {
         }
       }
 
-      console.error("DEPRECATED: Localizer.localizeString called with object argument")
-      console.trace()
       return (output as unknown) as string
     }
   }
@@ -161,6 +159,10 @@ export default class Localizer {
         locstr = locstr.replace("{" + i + "}", args[i])
       }
     }
+
+    // Strip context if present
+    locstr = locstr.split("|")[0]
+
     return locstr
   }
 
