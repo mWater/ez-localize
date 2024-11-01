@@ -1,5 +1,6 @@
 import _ from "lodash"
 import xlsx from "xlsx"
+import { LocalizerData } from "."
 
 export interface LocalizedString {
   _base: string
@@ -80,7 +81,7 @@ export function changeBaseLocale(strs: LocalizedString[], fromLocale: string, to
   }
 }
 
-/** Update a set of strings based on newly localized ones */
+/** Update a set of strings based on newly localized ones. Mutates the original strings */
 export function updateLocalizedStrings(strs: LocalizedString[], updates: LocalizedString[]): void {
   // Regularize CR/LF and trim
   const regularize = (str: any) => {
@@ -253,4 +254,70 @@ export function importXlsx(locales: Locale[], xlsxFile: string): LocalizedString
   }
 
   return strs
+}
+
+/** Remove unused strings from a LocalizerData object */
+export function removeUnusedStrings(data: LocalizerData): LocalizerData {
+  const unused: Record<string, boolean> = {}
+  for (const str of data.unused || []) {
+    unused[str] = true
+  }
+
+  return {
+    ...data,
+    strings: data.strings.filter(str => !unused[str[str._base]]),
+    unused: []
+  }
+}
+
+/** Merge multiple LocalizerData objects. Merges locales and strings, then determines unused strings by 
+ * union of all unused strings from inputs then removing any strings that are actually used.
+ * Prefers translations from later inputs over earlier ones. */
+export function mergeLocalizerData(inputs: LocalizerData[]): LocalizerData {
+  const merged: LocalizerData = { locales: [], strings: [], unused: [] }
+
+  // Merge locales
+  merged.locales = _.uniq([...inputs.map(i => i.locales).flat()], "code")
+
+  // Create a map of merged strings by <base locale>:<base string>
+  const mergedStringsMap: Record<string, LocalizedString> = {}
+
+  // Merge strings
+  for (const input of inputs) {
+    for (const str of input.strings) {
+      const key = str._base + ":" + str[str._base]
+      if (mergedStringsMap[key]) {
+        mergedStringsMap[key] = mergeLocalizedString(mergedStringsMap[key], str)
+      } else {
+        mergedStringsMap[key] = str
+      }
+    }
+  }
+
+  merged.strings = Object.values(mergedStringsMap)
+  
+  // Determine unused strings by union of all unused strings from inputs
+  // then removing any strings that are actually used
+  const knownStrings = new Set(merged.strings.map(s => s[s._base]))
+  merged.unused = _.uniq([...inputs.map(i => i.unused || []).flat()])
+  merged.unused = merged.unused.filter(str => !knownStrings.has(str))
+
+  return merged
+}
+
+/** Merge two localized strings. Assumes they have the same base locale. Prefers values from b over a */
+function mergeLocalizedString(a: LocalizedString, b: LocalizedString): LocalizedString {
+  if (a._base !== b._base) {
+    throw new Error("Cannot merge strings with different base locales")
+  }
+
+  // Merge, ignoring _base and _unused and blank values
+  const merged: LocalizedString = { ...a }
+  for (const key in b) {
+    if (key !== "_base" && key !== "_unused" && b[key]) {
+      merged[key] = b[key]
+    }
+  }
+  
+  return merged
 }

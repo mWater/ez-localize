@@ -1,13 +1,17 @@
 import Localizer, { LocalizationRequest } from './Localizer'
-import { LocalizedString, Locale } from './utils'
+import { LocalizedString, Locale, removeUnusedStrings, updateLocalizedStrings, mergeLocalizerData } from './utils'
 
-export { LocalizedString, Locale }
+export { LocalizedString, Locale, removeUnusedStrings, updateLocalizedStrings, mergeLocalizerData }
 
+/** Data structure that contains all data for a localizer */
 export interface LocalizerData {
+  /** List of locales supported by this localization */
   locales: Locale[]
+
+  /** List of strings for this localization */
   strings: LocalizedString[]
 
-  /** Base strings that are unused. They are still included in strings, but are not exported  */
+  /** Base strings that are unused. They are still included in strings, but are not exported */
   unused?: string[]
 }
 
@@ -25,16 +29,3 @@ export const defaultT: LocalizeString = defaultLocalizer.T
 // Support for non-ES6
 export default { Localizer, defaultT } 
 
-/** Remove unused strings from a LocalizerData object */
-export function removeUnusedStrings(data: LocalizerData): LocalizerData {
-  const unused: Record<string, boolean> = {}
-  for (const str of data.unused || []) {
-    unused[str] = true
-  }
-
-  return {
-    ...data,
-    strings: data.strings.filter(str => !unused[str[str._base]]),
-    unused: []
-  }
-}

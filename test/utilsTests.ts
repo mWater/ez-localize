@@ -2,6 +2,7 @@ import _ from "lodash"
 import { assert } from "chai"
 import * as utils from "../src/utils"
 import { LocalizedString } from "../src/utils"
+import { LocalizerData } from "../src"
 
 describe("Localizer", function () {
   describe("extractLocalizedStrings", function () {
@@ -26,7 +27,7 @@ describe("Localizer", function () {
       ])
     })
 
-    return it("gets localizedStrings strings", function () {
+    it("gets localizedStrings strings", function () {
       const obj = {
         localizedStrings: [
           {
@@ -64,7 +65,6 @@ describe("Localizer", function () {
         { _base: "en", en: "hello2" }
       ])
 
-      // Should keep orig object
       return assert(strs2[0] === strs[0])
     }))
 
@@ -155,7 +155,7 @@ describe("Localizer", function () {
       return assert.deepEqual(input, output)
     })
 
-    return it("returns empty strings", function () {
+    it("returns empty strings", function () {
       const input = [{ _base: "en", en: "2" }]
 
       const output = this.roundtrip(input)
@@ -163,7 +163,7 @@ describe("Localizer", function () {
     })
   })
 
-  return describe("updateLocalizedStrings", function () {
+  describe("updateLocalizedStrings", function () {
     beforeEach(function () {
       return (this.localizer = utils)
     })
@@ -234,7 +234,7 @@ describe("Localizer", function () {
       return assert.deepEqual(strs, [{ _base: "en", en: "other" }], JSON.stringify(strs))
     })
 
-    return it("leaves unknown languages untouched", function () {
+    it("leaves unknown languages untouched", function () {
       const strs = [{ _base: "en", en: "hello", es: "hola1", fr: "bonjour" }]
 
       const updates = [{ _base: "en", en: "hello", es: "hola3" }]
@@ -242,6 +242,184 @@ describe("Localizer", function () {
       this.localizer.updateLocalizedStrings(strs, updates)
 
       return assert.deepEqual(strs, [{ _base: "en", en: "hello", es: "hola3", fr: "bonjour" }])
+    })
+  })
+
+  describe("mergeLocalizerData", function () {
+    const testLocales = [
+      { code: "en", name: "English" },
+      { code: "es", name: "Spanish" }
+    ]
+
+    it("merges non-conflicting strings", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "goodbye", es: "adios" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola" },
+        { _base: "en", en: "goodbye", es: "adios" }
+      ])
+    })
+
+    it("updates translations for existing strings", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola2" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola2" }
+      ])
+    })
+
+    it("ignores blank strings", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola" }
+      ])
+    })
+
+    it("preserves strings with different base languages", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" },
+          { _base: "es", en: "goodbye", es: "adios" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola2" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola2" },
+        { _base: "es", en: "goodbye", es: "adios" }
+      ])
+    })
+
+    it("handles empty updates", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: []
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola" }
+      ])
+    })
+
+    it("handles empty base", function () {
+      const base: LocalizerData = {
+        locales: testLocales,
+        strings: []
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola" }
+      ])
+    })
+
+    it("preserves additional languages in base", function () {
+      const base: LocalizerData = {
+        locales: [...testLocales, { code: "fr", name: "French" }],
+        strings: [
+          { _base: "en", en: "hello", es: "hola", fr: "bonjour" }
+        ]
+      }
+      
+      const update: LocalizerData = {
+        locales: testLocales,
+        strings: [
+          { _base: "en", en: "hello", es: "hola2" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.strings, [
+        { _base: "en", en: "hello", es: "hola2", fr: "bonjour" }
+      ])
+    })
+
+    it("merges locales", function() {
+      const base: LocalizerData = {
+        locales: [{ code: "en", name: "English" }],
+        strings: [
+          { _base: "en", en: "hello" }
+        ]
+      }
+
+      const update: LocalizerData = {
+        locales: [
+          { code: "en", name: "English" },
+          { code: "es", name: "Spanish" }
+        ],
+        strings: [
+          { _base: "en", en: "hello", es: "hola" }
+        ]
+      }
+
+      const result = utils.mergeLocalizerData([base, update])
+      assert.deepEqual(result.locales, [
+        { code: "en", name: "English" },
+        { code: "es", name: "Spanish" }
+      ])
     })
   })
 })

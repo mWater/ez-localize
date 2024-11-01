@@ -1,10 +1,13 @@
 import Localizer, { LocalizationRequest } from './Localizer';
-import { LocalizedString, Locale } from './utils';
-export { LocalizedString, Locale };
+import { LocalizedString, Locale, removeUnusedStrings, updateLocalizedStrings, mergeLocalizerData } from './utils';
+export { LocalizedString, Locale, removeUnusedStrings, updateLocalizedStrings, mergeLocalizerData };
+/** Data structure that contains all data for a localizer */
 export interface LocalizerData {
+    /** List of locales supported by this localization */
     locales: Locale[];
+    /** List of strings for this localization */
     strings: LocalizedString[];
-    /** Base strings that are unused. They are still included in strings, but are not exported  */
+    /** Base strings that are unused. They are still included in strings, but are not exported */
     unused?: string[];
 }
 export { default as Localizer } from './Localizer';
@@ -20,5 +23,3 @@ declare const _default: {
     defaultT: LocalizeString;
 };
 export default _default;
-/** Remove unused strings from a LocalizerData object */
-export declare function removeUnusedStrings(data: LocalizerData): LocalizerData;
