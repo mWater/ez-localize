@@ -1,5 +1,6 @@
 import fs from "fs"
 import { exportXlsx } from "./utils"
+import { LocalizerData } from "."
 
 /**
  * Export file to XLSX
@@ -8,8 +9,17 @@ import { exportXlsx } from "./utils"
  */
  export default function exportLocalizationFileToXlsx(dataFile: string, xlsxFile: string): void {
   // Read in data file
-  const localizations = JSON.parse(fs.readFileSync(dataFile, "utf-8"))
+  const localizations: LocalizerData = JSON.parse(fs.readFileSync(dataFile, "utf-8"))
 
-  const ws = exportXlsx(localizations.locales, localizations.strings)
+  // Create map of unused strings
+  const unused: Record<string, boolean> = {}
+  for (const str of localizations.unused || []) {
+    unused[str] = true
+  }
+
+  // Filter out unused strings
+  const strings = localizations.strings.filter(str => !unused[str[str._base]])
+
+  const ws = exportXlsx(localizations.locales, strings)
   return fs.writeFileSync(xlsxFile, ws, "base64")
 }

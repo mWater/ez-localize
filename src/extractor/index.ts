@@ -1,5 +1,5 @@
 import fs from "fs"
-import { LocalizerData } from ".."
+import { LocalizedString, LocalizerData } from ".."
 import * as stringExtractor from "./stringExtractor"
 
 /**
@@ -60,7 +60,7 @@ import * as stringExtractor from "./stringExtractor"
     }
 
     // Create map of english
-    const map = {}
+    const map: Record<string, LocalizedString> = {}
     for (const loc of data.strings) {
       map[loc.en] = loc
     }
@@ -68,7 +68,7 @@ import * as stringExtractor from "./stringExtractor"
     for (const str of strs) {
       // Create item if doesn't exist
       if (!map[str]) {
-        const string = { _base: "en", en: str }
+        const string: LocalizedString = { _base: "en", en: str }
         for (const loc of data.locales) {
           if (loc.code !== "en") {
             string[loc.code] = ""
@@ -92,7 +92,7 @@ import * as stringExtractor from "./stringExtractor"
     }
 
     // Gather unused
-    const known = {}
+    const known: Record<string, boolean> = {}
     for (const str of strs) {
       known[str] = true
     }

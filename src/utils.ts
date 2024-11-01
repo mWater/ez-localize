@@ -46,7 +46,7 @@ export function extractLocalizedStrings(obj: any): LocalizedString[] {
 export function dedupLocalizedStrings(strs: LocalizedString[]): LocalizedString[] {
   const out = []
 
-  const keys = {}
+  const keys: Record<string, boolean> = {}
   for (let str of strs) {
     const key = str._base + ":" + str[str._base]
     if (keys[key]) {
@@ -91,7 +91,7 @@ export function updateLocalizedStrings(strs: LocalizedString[], updates: Localiz
   }
 
   // Map updates by key
-  const updateMap = {}
+  const updateMap: Record<string, LocalizedString> = {}
   for (let update of updates) {
     updateMap[update._base + ":" + regularize(update[update._base])] = update
   }
@@ -102,6 +102,7 @@ export function updateLocalizedStrings(strs: LocalizedString[], updates: Localiz
     if (match != null) {
       for (let key in match) {
         const value = match[key]
+        // Ignore _base and _unused (_unused is legacy)
         if (key !== "_base" && key !== str._base && key !== "_unused") {
           // Also ignore unused
           // Remove blank values
@@ -122,7 +123,7 @@ export function exportXlsx(locales: Locale[], strs: LocalizedString[]): string {
   const wb: any = { SheetNames: [], Sheets: {} }
 
   const range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } }
-  const ws = {}
+  const ws: any = {}
 
   function addCell(row: any, column: any, value: any) {
     // Update ranges
@@ -160,10 +161,6 @@ export function exportXlsx(locales: Locale[], strs: LocalizedString[]): string {
   // Add rows
   let rows = 0
   for (let str of strs) {
-    if (str._unused) {
-      continue
-    }
-
     const base = _.findWhere(locales, { code: str._base })
 
     // Skip if unknown
@@ -222,7 +219,7 @@ export function importXlsx(locales: Locale[], xlsxFile: string): LocalizedString
       continue
     }
 
-    const str = { _base: base.code }
+    const str: LocalizedString = { _base: base.code }
 
     for (let col = 1, end1 = totalColumns, asc1 = 1 <= end1; asc1 ? col < end1 : col > end1; asc1 ? col++ : col--) {
       const cell = ws[xlsx.utils.encode_cell({ c: col, r: i })]

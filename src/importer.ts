@@ -18,16 +18,7 @@ import { updateLocalizedStrings } from "./utils"
   const updates = importXlsx(localizations.locales, base64File)
   updateLocalizedStrings(localizations.strings, updates)
 
-  // Sort by used
-  localizations.strings = _.sortBy(localizations.strings, function (l: any) {
-    if (l._unused) {
-      return 1
-    } else {
-      return 0
-    }
-  })
-
-  // Write the whole thing to a JSon file
+  // Write out the updated data
   fs.writeFileSync(newDataFile, JSON.stringify(localizations, null, 2), "utf-8")
   return localizations
 }
