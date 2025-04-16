@@ -81,8 +81,8 @@ export function changeBaseLocale(strs: LocalizedString[], fromLocale: string, to
   }
 }
 
-/** Update a set of strings based on newly localized ones. Mutates the original strings */
-export function updateLocalizedStrings(strs: LocalizedString[], updates: LocalizedString[]): void {
+/** Update a set of strings based on newly localized ones. Mutates the original strings. Optionally specify a locale to update. */
+export function updateLocalizedStrings(strs: LocalizedString[], updates: LocalizedString[], locale?: string): void {
   // Regularize CR/LF and trim
   const regularize = (str: any) => {
     if (!str) {
@@ -102,10 +102,14 @@ export function updateLocalizedStrings(strs: LocalizedString[], updates: Localiz
     const match = updateMap[str._base + ":" + regularize(str[str._base])]
     if (match != null) {
       for (let key in match) {
+        // If locale is specified, only update that locale
+        if (locale && key !== locale) {
+          continue
+        }
+
         const value = match[key]
         // Ignore _base and _unused (_unused is legacy)
         if (key !== "_base" && key !== str._base && key !== "_unused") {
-          // Also ignore unused
           // Remove blank values
           if (value) {
             str[key] = regularize(value)
