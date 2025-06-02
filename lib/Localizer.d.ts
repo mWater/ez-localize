@@ -34,7 +34,7 @@ export default class Localizer {
     /**
      * Localizes a string based on a localization request.
      */
-    private localizeStringRequest;
+    localizeStringRequest(request: LocalizationRequest): string | null;
     /** Determines if a string is localized */
     isLocalized(str: string): boolean;
     makeGlobal(handlebars: any): void;

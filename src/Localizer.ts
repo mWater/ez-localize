@@ -123,7 +123,7 @@ export default class Localizer {
   /**
    * Localizes a string based on a localization request.
    */
-  private localizeStringRequest(request: LocalizationRequest): string | null {
+  localizeStringRequest(request: LocalizationRequest): string | null {
     let { locale, text, args } = request
 
     if (text == null) {
