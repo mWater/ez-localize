@@ -54,6 +54,7 @@ describe("Localizer", function () {
   it("strips context", function () {
     assert.equal(this.loc.T("open|verb"), "abrir")
     assert.equal(this.loc.T("open|noun"), "abierto")
+    assert.equal(this.loc.T`open${'apple|banana'}|verb`, "openapple|banana")
   })
 
   describe("react-style localization", () =>
