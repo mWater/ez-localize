@@ -35,7 +35,7 @@ var func = function() {
       assert.deepEqual(stringExtractor.findInJs(code), ["test"])
     })
 
-    return it("finds T calls on objects", function () {
+    it("finds T calls on objects", function () {
       const code = `\
 var func = function() {
   var ctx = {};
@@ -47,6 +47,17 @@ var func = function() {
 }\
 `
       assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2", "test3", "dog"])
+    })
+
+    return it("tolerates import.meta (Vite sources)", function () {
+      const code = `\
+var func = function() {
+  var url = import.meta.env.VITE_API_URL;
+  console.log(T("test1"));
+  console.log(T\`test2 \${url}\`);
+}\
+`
+      assert.deepEqual(stringExtractor.findInJs(code), ["test1", "test2 {0}"])
     })
   })
 

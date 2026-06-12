@@ -58,6 +58,11 @@ export function findFromRootDirs(rootDirs: string[], callback: (strs: string[]) 
 
 export function findInJs(this: any, js: any) {
   const items: any = []
+  // acorn parses in script mode, which rejects import.meta — and Vite apps use
+  // import.meta.env pervasively (transpileModule passes it through untouched, so
+  // transpiled .ts/.tsx hits this too). Substitute a plain identifier: it could
+  // only affect extraction if a T literal itself contained "import.meta".
+  js = js.replace(/import\s*\.\s*meta/g, "__importMeta")
   walk.simple(acorn.parse(js, { ecmaVersion: "latest" }), {
     CallExpression: function (node: any) {
       if (node.callee?.name === "T" && typeof node.arguments[0]?.value === "string") {
