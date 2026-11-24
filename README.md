@@ -107,3 +107,7 @@ localizer.makeGlobal(handlebars);
 ```
 
 Only relative requires are included by default. To include another module, pass `externalModules` to options, an optional list of external modules to include
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
